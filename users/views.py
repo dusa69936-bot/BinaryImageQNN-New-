@@ -195,12 +195,20 @@ def MnistTorchQNN(request):
             image = Image.open(io.BytesIO(image_bytes)).convert("L")
 
             prediction, confidence = predict_digit(image)
-            is_correct = int(prediction) == actual_digit
+            
+            if prediction == -1:
+                return JsonResponse({
+                    "prediction": -1,
+                    "result": False,
+                    "error": str(confidence)
+                })
 
+            is_correct = int(prediction) == actual_digit
+            
             total_predictions += 1
             if is_correct:
                 correct_predictions += 1
-
+            
             return JsonResponse({
                 "prediction": int(prediction),
                 "result": is_correct,
@@ -209,11 +217,13 @@ def MnistTorchQNN(request):
             })
 
         except Exception as e:
-            print("Prediction Error:", e)
+            import traceback
+            print("Prediction View Error:", traceback.format_exc())
 
             return JsonResponse({
                 "prediction": -1,
-                "result": False
+                "result": False,
+                "error": str(e)
             })
 
     return JsonResponse({"error": "Invalid request method"})

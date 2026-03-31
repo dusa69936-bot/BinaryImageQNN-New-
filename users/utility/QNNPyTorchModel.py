@@ -104,7 +104,8 @@ def preprocess_image(image):
         image = padded_img
 
     # resize to MNIST size using high-quality resampling
-    image = image.resize((28, 28), Image.Resampling.LANCZOS)
+    resample_filter = getattr(Image, 'Resampling', Image).LANCZOS
+    image = image.resize((28, 28), resample_filter)
 
     # convert to numpy
     img = np.array(image, dtype=np.float32)
@@ -139,5 +140,6 @@ def predict_digit(image):
 
     except Exception as e:
 
-        print("❌ Prediction Error:", e)
-        return -1
+        import traceback
+        print("❌ Prediction Error:", traceback.format_exc())
+        return -1, str(e)

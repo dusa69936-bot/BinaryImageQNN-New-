@@ -216,11 +216,19 @@ function predictDigit() {
         document.getElementById('result-placeholder').style.display = 'none';
         document.getElementById('result-display').style.display = 'flex';
 
-        document.getElementById('predicted-val').innerText = data.prediction;
-
         const badge = document.getElementById('validation-badge');
         const icon = document.getElementById('validation-icon');
         const text = document.getElementById('validation-text');
+
+        if (data.prediction === -1) {
+            badge.className = "badge error";
+            icon.className = "fa-solid fa-triangle-exclamation";
+            text.innerText = "Error: " + (data.error || "Unknown Error");
+            document.getElementById('predicted-val').innerText = "!";
+            return;
+        }
+
+        document.getElementById('predicted-val').innerText = data.prediction;
 
         // 🔥 Logic to update correct count
         if (data.result) {
