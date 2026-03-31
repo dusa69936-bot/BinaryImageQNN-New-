@@ -2,7 +2,7 @@ Django>=5.0.0
 gunicorn>=21.2.0
 whitenoise>=6.6.0
 django-cors-headers>=4.3.1
-numpy
+numpy<2.0.0
 Pillow
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.0.1+cpu

@@ -129,7 +129,12 @@ def predict_digit(image):
 
         img = preprocess_image(image)
 
-        img = torch.tensor(img).float()
+        try:
+            img = torch.tensor(img)
+        except TypeError:
+            img = torch.tensor(img.tolist())
+            
+        img = img.float()
 
         with torch.no_grad():
             output = model(img)
