@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block contents %}
+<section class="hero-section" style="padding-top: 6rem;">
+    <div class="reveal">
+        <h2 class="hero-title" style="font-size: 3rem;">Model Performance</h2>
+        <p class="hero-subtitle">Comprehensive analysis of the Deep Quantum Neural Network's diagnostic capabilities.</p>
+    </div>
+
+    <div class="prediction-container reveal" style="grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+        <!-- Card 1 -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Overall Accuracy</p>
+            <h3 style="font-size: 2.5rem; color: var(--accent);">97.5%</h3>
+            <div style="width: 100%; height: 4px; background: rgba(34, 211, 238, 0.2); margin-top: 1rem; border-radius: 2px;">
+                <div style="width: 97.5%; height: 100%; background: var(--accent); border-radius: 2px; box-shadow: 0 0 10px var(--accent);"></div>
+            </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Model Loss</p>
+            <h3 style="font-size: 2.5rem; color: var(--secondary);">0.024</h3>
+            <div style="width: 100%; height: 4px; background: rgba(168, 85, 247, 0.2); margin-top: 1rem; border-radius: 2px;">
+                <div style="width: 20%; height: 100%; background: var(--secondary); border-radius: 2px; box-shadow: 0 0 10px var(--secondary);"></div>
+            </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Qubits Utilized</p>
+            <h3 style="font-size: 2.5rem; color: var(--primary);">64</h3>
+            <div style="width: 100%; height: 4px; background: rgba(99, 102, 241, 0.2); margin-top: 1rem; border-radius: 2px;">
+                <div style="width: 100%; height: 100%; background: var(--primary); border-radius: 2px; box-shadow: 0 0 10px var(--primary);"></div>
+            </div>
+        </div>
+        <!-- Card 4 (Live Accuracy) -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Live Accuracy</p>
+            <h3 style="font-size: 2.5rem; color: #a855f7;">{{ live_accuracy }}%</h3>
+            <div style="width: 100%; height: 4px; background: rgba(168, 85, 247, 0.2); margin-top: 1rem; border-radius: 2px;">
+                <div style="width: {{ live_accuracy }}%; height: 100%; background: #a855f7; border-radius: 2px; box-shadow: 0 0 10px #a855f7;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="prediction-container reveal">
+        <!-- Chart 1 -->
+        <div class="glass-card">
+            <h4 style="margin-bottom: 1.5rem; color: var(--text-main);">Accuracy progression</h4>
+            <canvas id="accuracyChart" height="200"></canvas>
+        </div>
+        <!-- Chart 2 -->
+        <div class="glass-card">
+            <h4 style="margin-bottom: 1.5rem; color: var(--text-main);">Loss convergence</h4>
+            <canvas id="lossChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Circuit Visualization Placeholder -->
+    <div class="glass-card reveal" style="margin-top: 2rem;">
+        <h4 style="margin-bottom: 2rem; color: var(--accent);">Quantum Circuit Architecture</h4>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 2rem; border: 1px dashed var(--glass-border);">
+            <i class="fa-solid fa-layer-group" style="font-size: 4rem; color: var(--primary); margin-bottom: 1.5rem; display: block;"></i>
+            <p style="color: var(--text-muted);">The QNN architecture employs a 64-qubit Hilbert space with AngleEmbedding and BasicEntanglerLayers, followed by a classical softmax layer for multi-class classification.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ctxAcc = document.getElementById('accuracyChart').getContext('2d');
+    const ctxLoss = document.getElementById('lossChart').getContext('2d');
+
+    const chartConfig = {
+        type: 'line',
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    };
+
+    new Chart(ctxAcc, {
+        ...chartConfig,
+        data: {
+            labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20'],
+            datasets: [{
+                label: 'Accuracy',
+                data: [72, 85, 92, 95, 97.5],
+                borderColor: '#22d3ee',
+                backgroundColor: 'rgba(34, 211, 238, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        }
+    });
+
+    new Chart(ctxLoss, {
+        ...chartConfig,
+        data: {
+            labels: ['Epoch 1', 'Epoch 5', 'Epoch 10', 'Epoch 15', 'Epoch 20'],
+            datasets: [{
+                label: 'Loss',
+                data: [0.8, 0.4, 0.15, 0.05, 0.02],
+                borderColor: '#a855f7',
+                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        }
+    });
+</script>
+{% endblock %}

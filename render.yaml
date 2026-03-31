@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: binary-image-qnn-backend
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn BinaryImageQNN.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: WEB_CONCURRENCY
+        value: 1

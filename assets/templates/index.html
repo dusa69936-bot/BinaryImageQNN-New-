@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Binary Image Classification</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+
+/* BACKGROUND */
+
+body{
+margin:0;
+font-family:Arial;
+background:url("{% static 'img/m13.png' %}") no-repeat center center/cover;
+min-height:100vh;
+}
+
+
+/* DARK OVERLAY */
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+z-index:-1;
+}
+
+
+/* TOP MENU */
+
+.top-menu{
+
+position:absolute;
+
+top:30px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+display:flex;
+
+gap:20px;
+
+z-index:1000;
+
+}
+
+
+/* MENU BOX */
+
+.menu-box{
+
+background:black;
+
+padding:10px 22px;
+
+border-radius:25px;
+
+transition:0.3s;
+
+}
+
+
+.menu-box a{
+
+color:white;
+
+text-decoration:none;
+
+font-size:16px;
+
+font-weight:600;
+
+}
+
+
+.menu-box:hover{
+
+background:#111;
+
+transform:scale(1.05);
+
+}
+
+
+.menu-box a:hover{
+
+color:#00ffff;
+
+}
+
+
+/* HERO */
+
+.hero{
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+text-align:center;
+
+}
+
+
+/* TITLE */
+
+.title{
+
+font-size:65px;
+
+font-weight:bold;
+
+color:yellow;
+
+text-shadow:3px 3px 12px black;
+
+max-width:1000px;
+
+line-height:1.3;
+
+}
+
+
+/* TITLE ANIMATION */
+
+.title span{
+
+display:inline-block;
+
+opacity:0;
+
+transform:translateY(50px);
+
+animation:split 0.8s forwards;
+
+}
+
+.title span:nth-child(1){animation-delay:0.2s;}
+.title span:nth-child(2){animation-delay:0.4s;}
+.title span:nth-child(3){animation-delay:0.6s;}
+.title span:nth-child(4){animation-delay:0.8s;}
+.title span:nth-child(5){animation-delay:1s;}
+.title span:nth-child(6){animation-delay:1.2s;}
+.title span:nth-child(7){animation-delay:1.4s;}
+.title span:nth-child(8){animation-delay:1.6s;}
+
+@keyframes split{
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- TOP MENU -->
+
+<div class="top-menu">
+
+<div class="menu-box">
+<a href="{% url 'index' %}">
+<i class="fa fa-home"></i> Home
+</a>
+</div>
+
+<div class="menu-box">
+<a href="{% url 'UserLogin' %}">
+<i class="fa fa-sign-in-alt"></i> Login
+</a>
+</div>
+
+<div class="menu-box">
+<a href="{% url 'AdminLogin' %}">
+<i class="fa fa-user-shield"></i> Admin
+</a>
+</div>
+
+<div class="menu-box">
+<a href="{% url 'UserRegister' %}">
+<i class="fa fa-user-plus"></i> Register
+</a>
+</div>
+
+</div>
+
+
+<!-- HERO -->
+
+<div class="hero">
+
+<h1 class="title">
+
+<span>Binary</span>
+<span>Image</span>
+<span>Classification</span>
+<span>Using</span>
+<span>Machine</span>
+<span>Learning</span>
+<span>and</span>
+<span>Deep Quantum Neural Networks</span>
+
+</h1>
+
+</div>
+
+
+{% block contents %}
+{% endblock %}
+
+</body>
+</html>

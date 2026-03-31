@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contents %}
+
+<style>
+
+/* 🔥 FULL BACKGROUND */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: linear-gradient(
+        rgba(0,0,0,0.8),
+        rgba(0,0,0,0.95)
+    ),
+    url("{% static 'img/image.png' %}");
+
+    background-size: cover;
+    background-position: center;
+}
+
+/* 🔥 TOP TITLE */
+.admin-top{
+    text-align:center;
+    margin-top:120px;
+}
+
+/* 🔥 BIG TITLE */
+.admin-title{
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1.5px;
+    margin-bottom: 30px;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.9),
+        0 0 20px rgba(255,255,255,0.8),
+        0 0 40px rgba(255,255,255,0.7);
+
+    animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+    from {
+        text-shadow: 0 0 10px rgba(255,255,255,0.6);
+    }
+    to {
+        text-shadow: 0 0 40px rgba(255,255,255,1);
+    }
+}
+
+/* CENTER */
+.page-content{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:20px;
+}
+
+/* CARD */
+.admin-card{
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border:1px solid rgba(255,255,255,0.15);
+    padding:40px;
+    border-radius:15px;
+    width:360px;
+    text-align:center;
+    color:white;
+}
+
+/* INPUT */
+.admin-card input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+    background: rgba(255,255,255,0.1);
+    color:white;
+}
+
+/* BUTTON */
+.btn-login{
+    background: linear-gradient(135deg,#6366f1,#a855f7);
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.btn-reset{
+    background:transparent;
+    border:1px solid #6366f1;
+    color:white;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* MESSAGE */
+.message{
+    margin-bottom:15px;
+    font-weight:bold;
+    color:yellow;
+}
+
+</style>
+
+<section class="hero-section">
+
+    <div class="admin-top">
+        <h1 class="admin-title">Welcome to Admin Page</h1>
+    </div>
+
+    <div class="page-content">
+
+        <div class="admin-card">
+
+            <h3>Admin Login Form</h3>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- ✅ FIXED FORM -->
+            <form method="POST" action="{% url 'AdminLoginCheck' %}">
+                {% csrf_token %}
+
+                <!-- 🔥 MAIN FIX HERE -->
+                <input type="text" name="username" placeholder="Enter Admin ID" required>
+
+                <input type="password" name="password" placeholder="Enter Password" required>
+
+                <br><br>
+
+                <button class="btn-login" type="submit">Login</button>
+                <button class="btn-reset" type="reset">Reset</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

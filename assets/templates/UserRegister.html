@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contents %}
+
+<style>
+
+/* 🔥 BACKGROUND */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 120px;
+
+    background: linear-gradient(
+        rgba(0,0,0,0.7),
+        rgba(0,0,0,0.9)
+    ),
+    url("{% static 'img/image.png' %}");
+
+    background-size: cover;
+    background-position: center;
+}
+
+/* 🔥 TITLE */
+.page-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 40px;
+    text-align: center;
+
+    text-shadow: 
+        0 0 10px rgba(255,255,255,0.8),
+        0 0 20px rgba(255,255,255,0.6),
+        2px 2px 6px rgba(0,0,0,0.9);
+}
+
+/* GLASS CARD */
+.glass-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 900px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+/* GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* INPUT */
+.input-group label {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+/* BUTTONS */
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-outline {
+    border: 1px solid #6366f1;
+    background: transparent;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+</style>
+
+<section class="hero-section">
+
+    <!-- 🔥 TITLE -->
+    <h1 class="page-title">Welcome to Register Page</h1>
+
+    <div class="glass-card">
+
+        <h2 style="text-align:center;">Create Account</h2>
+
+        {% if msg %}
+        <div style="color:lightgreen; text-align:center;">{{ msg }}</div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'UserRegisterActions' %}">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Login ID</label>
+                    <input type="text" name="loginid" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Mobile</label>
+                    <input type="text" name="mobile" class="input-field">
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="input-field">
+                </div>
+
+                <div class="input-group">
+                    <label>Locality</label>
+                    <input type="text" name="locality" class="input-field">
+                </div>
+
+                <div class="input-group" style="grid-column: span 2;">
+                    <label>Address</label>
+                    <textarea name="address" class="input-field"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>City</label>
+                    <input type="text" name="city" class="input-field">
+                </div>
+
+                <div class="input-group">
+                    <label>State</label>
+                    <input type="text" name="state" class="input-field">
+                </div>
+
+            </div>
+
+            <br>
+
+            <div style="display:flex; gap:10px;">
+                <button class="btn-primary" type="submit">Register</button>
+                <button class="btn-outline" type="reset">Clear</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

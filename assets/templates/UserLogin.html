@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contents %}
+
+<style>
+
+/* 🔥 FULL BACKGROUND */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;   /* CENTER EVERYTHING */
+    align-items: center;
+    
+    background: linear-gradient(
+        rgba(0,0,0,0.7),
+        rgba(0,0,0,0.9)
+    ),
+    url("{% static 'img/image.png' %}");
+
+    background-size: cover;
+    background-position: center;
+}
+
+/* 🔥 CENTER CONTAINER (IMPORTANT) */
+.center-box {
+    text-align: center;
+}
+
+/* 🔥 TITLE */
+.page-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 25px;
+
+    text-shadow: 
+        0 0 12px rgba(255,255,255,0.9),
+        0 0 25px rgba(255,255,255,0.7),
+        2px 2px 8px rgba(0,0,0,1);
+}
+
+/* 🔥 GLASS CARD */
+.glass-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px;
+    width: 100%;
+    max-width: 380px;
+    margin: auto;
+
+    color: white;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+
+/* INPUT */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    outline: none;
+}
+
+/* INPUT FOCUS */
+.input-field:focus {
+    background: rgba(255,255,255,0.2);
+    box-shadow: 0 0 10px #6366f1;
+}
+
+/* BUTTON ROW */
+.btn-row {
+    display: flex;
+    gap: 10px;
+}
+
+/* BUTTONS */
+.btn-primary {
+    flex: 1;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
+
+.btn-outline {
+    flex: 1;
+    border: 1px solid #6366f1;
+    background: transparent;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* MESSAGE */
+.message {
+    margin-top: 10px;
+    color: #facc15;
+    font-weight: bold;
+}
+
+</style>
+
+<section class="hero-section">
+
+    <div class="center-box">
+
+        <!-- 🔥 TITLE -->
+        <h1 class="page-title">Welcome to Login Page</h1>
+
+        <!-- 🔥 CARD -->
+        <div class="glass-card">
+
+            <h3>Login Form</h3>
+
+            <!-- DJANGO MESSAGE -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'UserLoginCheck' %}">
+                {% csrf_token %}
+
+                <input type="text" name="loginid" class="input-field" placeholder="Enter Login ID" required>
+
+                <input type="password" name="password" class="input-field" placeholder="Enter Password" required>
+
+                <div class="btn-row">
+                    <button class="btn-primary" type="submit">Login</button>
+                    <button class="btn-outline" type="reset">Reset</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

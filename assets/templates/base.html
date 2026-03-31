@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumVision | Binary Image Classification</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/modern.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #0f172a;
+
+            background-image: 
+            linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)),
+            url("/static/img/image.png");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        /* ✅ FIXED TITLE */
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white !important;
+            position: relative;
+            z-index: 10;
+            line-height: 1.4;
+        }
+
+        .hero-subtitle {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: #cbd5f5;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            border: 1px solid #6366f1;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links li a {
+            padding: 10px 18px;
+            margin: 0 5px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav-links li a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        /* ✅ SPLIT TEXT ANIMATION */
+        .split-text span {
+            opacity: 0;
+            display: inline-block;
+            transform: translateY(40px);
+            animation: fadeUp 0.6s forwards;
+            color: white;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    {% block styles %}{% endblock %}
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="nav-container">
+    <nav class="nav-glass">
+        <div class="logo">
+            <i class="fa-solid fa-atom"></i> QuantumVision
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="{% url 'index' %}">Home</a></li>
+
+            {% if request.session.user %}
+                <li><a href="{% url 'UserViewDataset' %}">Dataset</a></li>
+                <li><a href="{% url 'eda_analysis' %}">EDA</a></li>
+                <li><a href="{% url 'QNNAccuracy' %}">Accuracy</a></li>
+                <li><a href="{% url 'UserTestCanvasMNIST' %}">Canvas</a></li>
+                <li><a href="{% url 'UserLogout' %}" class="btn-outline">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'UserLogin' %}">Login</a></li>
+                <li><a href="{% url 'AdminLogin' %}">Admin</a></li>
+                <li><a href="{% url 'UserRegister' %}" class="btn-primary">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- MAIN -->
+<main>
+    {% block contents %}
+    <section class="hero-section">
+        <h1 class="hero-title">
+            Quantum-Augmented<br>Image Intelligence
+        </h1>
+
+        <p class="hero-subtitle">
+            Deep Quantum Neural Networks for digit classification
+        </p>
+
+        <div style="margin-top:20px;">
+            <a href="{% url 'UserLogin' %}" class="btn-primary">Explore Dataset</a>
+            <a href="{% url 'UserRegister' %}" class="btn-outline" style="margin-left: 10px;">Register</a>
+        </div>
+    </section>
+    {% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer style="padding: 2rem; text-align:center;">
+    <p>© 2024 QuantumVision</p>
+</footer>
+
+<script src="{% static 'js/modern.js' %}"></script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+{% extends 'admins/adminbase.html'%}
+{% load static %}
+
+{% block contents %}
+
+<style>
+
+/* 🔥 FULL BACKGROUND */
+#intro {
+    min-height: 100vh;
+    padding: 120px 40px;
+
+    background: linear-gradient(
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0.95)
+    ),
+    url("{% static 'img/image.png' %}");
+
+    background-size: cover;
+    background-position: center;
+}
+
+/* 🔥 TITLE */
+.page-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 30px;
+
+    text-shadow: 
+        0 0 10px rgba(255,255,255,0.8),
+        0 0 20px rgba(255,255,255,0.6);
+}
+
+/* 🔥 BIG GLASS BOX (UPDATED 🔥) */
+.table-box {
+    width: 95%;                 /* FULL WIDTH */
+    margin: auto;
+    padding: 30px;
+
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+
+    box-shadow: 0 15px 60px rgba(0,0,0,0.7);
+}
+
+/* 🔥 TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+/* 🔴 HEADER */
+th {
+    background: rgba(255,255,255,0.1);
+    padding: 14px;
+    text-align: center;
+
+    color: #ff4d4d;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7);
+}
+
+/* DATA */
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 🔥 ROW HOVER */
+tr:hover {
+    background: rgba(255,255,255,0.08);
+    transform: scale(1.01);
+    transition: 0.3s;
+}
+
+/* 🔥 STATUS */
+.status-active {
+    color: #4ade80;
+    font-weight: bold;
+}
+
+.status-waiting {
+    color: #facc15;
+    font-weight: bold;
+}
+
+/* 🔥 LINKS */
+a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #a78bfa;
+    text-decoration: underline;
+}
+
+</style>
+
+
+<section id="intro">
+
+    <!-- 🔥 TITLE -->
+    <h2 class="page-title">View Register User Details</h2>
+
+    <!-- 🔥 BIG TABLE -->
+    <div class="table-box">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>Login ID</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Locality</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for i in data %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.name}}</td>
+                <td>{{i.loginid}}</td>
+                <td>{{i.mobile}}</td>
+                <td>{{i.email}}</td>
+                <td>{{i.locality}}</td>
+
+                <td>
+                    {% if i.status == 'activated' %}
+                        <span class="status-active">Activated</span>
+                    {% else %}
+                        <span class="status-waiting">Waiting</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if i.status == 'waiting' %}
+                        <a href="/ActivaUsers/?uid={{ i.id }}">Activate</a>
+                    {% else %}
+                        Activated /
+                        <a href="/DeleteUser/?uid={{ i.id }}">Delete</a>
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+{% endblock %}

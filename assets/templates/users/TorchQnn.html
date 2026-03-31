@@ -1,0 +1,31 @@
+{% extends 'users/userbase.html' %}
+
+{% block contents %}
+
+<section id="intro">
+
+<div class="intro-text">
+
+<h2 align="center">Quantum Neural Network Results</h2>
+
+<center>
+
+<h3 style="color:green;">
+Accuracy : {{accuracy}} %
+</h3>
+
+<h3 style="color:blue;">
+Loss : {{loss}}
+</h3>
+
+<h3 style="color:red;">
+Predicted Digit : {{prediction}}
+</h3>
+
+</center>
+
+</div>
+
+</section>
+
+{% endblock %}

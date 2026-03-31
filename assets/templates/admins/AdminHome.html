@@ -1,0 +1,100 @@
+{% extends 'admins/adminbase.html' %}
+{% load static %}
+
+{% block contents %}
+
+<style>
+
+#intro{
+    margin:0;
+    padding:0;
+}
+
+.admin-home{
+    position:relative;
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background: linear-gradient(
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0.95)
+    ),
+    url("{% static 'img/image.png' %}");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.main-title{
+    position:absolute;
+    top:80px;
+    width:100%;
+    text-align:center;
+
+    color:#FFD700;
+    font-weight:900;
+    line-height:1.5;
+
+    opacity:0;
+    transform:translateY(-50px);
+    animation:fadeDown 1.2s ease forwards;
+}
+
+.main-title .line{
+    display:block;
+    font-size:3rem;
+}
+
+@keyframes fadeDown{
+    from{
+        opacity:0;
+        transform:translateY(-50px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.dashboard-box{
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    padding:40px 70px;
+    border-radius:15px;
+    text-align:center;
+    color:white;
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
+}
+
+.dashboard-box h3{
+    font-size:2rem;
+    font-weight:700;
+    margin:0;
+    color:white;
+    text-shadow:0 0 10px rgba(255,255,255,0.6);
+}
+
+</style>
+
+<section id="intro">
+
+    <div class="admin-home">
+
+        <h1 class="main-title">
+            <span class="line">Binary Image Classification</span>
+            <span class="line">Using Machine Learning and</span>
+            <span class="line">Deep Quantum Neural Networks</span>
+        </h1>
+
+        <div class="dashboard-box">
+            <h3>Welcome to Admin Homepage</h3>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
