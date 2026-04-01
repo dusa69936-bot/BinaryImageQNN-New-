@@ -9,7 +9,7 @@ export default function App() {
 
   // Replace this URL with your actual frontend URL or Local IP Address
   // E.g., http://172.19.16.169:8000 or a production URL
-  const targetUrl = 'http://192.168.1.10:8000';
+  const targetUrl = 'https://binaryimageqnn-1.onrender.com';
 
   // Handle Android back button
   React.useEffect(() => {
