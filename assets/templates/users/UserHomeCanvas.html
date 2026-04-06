@@ -55,7 +55,7 @@
 
                 <!-- 🔥 LIVE ACCURACY DISPLAY -->
                 <h4 style="margin-top:15px; color:#22d3ee;">
-                    Live Accuracy: <span id="live-accuracy">0%</span>
+                    Prediction Accuracy: <span id="live-accuracy">0%</span>
                 </h4>
             </div>
         </div>
@@ -276,8 +276,8 @@ function predictDigit() {
             text.innerText = "Prediction Discrepancy";
         }
 
-        // 🔥 Update Live Accuracy using backend data
-        document.getElementById("live-accuracy").innerText = data.live_accuracy + "%";
+        // 🔥 Update Live Accuracy using backend data (Model Confidence for this single image)
+        document.getElementById("live-accuracy").innerText = data.accuracy + "%";
     })
     .catch(() => {
         btn.innerHTML = "Retry";
