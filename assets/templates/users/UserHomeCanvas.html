@@ -30,10 +30,14 @@
                 <canvas id="canvas" width="280" height="280"></canvas>
             </div>
 
-            <div class="controls">
+            <div class="controls" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
                 <button onclick="clearModernCanvas()" class="btn-outline">
                     <i class="fa-solid fa-eraser"></i> Clear
                 </button>
+                <label for="imageUpload" class="btn-outline" style="cursor: pointer; margin: 0; padding: 10px 20px; display: inline-flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-upload"></i> Upload
+                </label>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
             </div>
 
             <div style="margin-top: 2rem;">
@@ -184,6 +188,36 @@ function clearModernCanvas() {
     canvasHelper.clear();
     document.getElementById('result-placeholder').style.display = 'flex';
     document.getElementById('result-display').style.display = 'none';
+    
+    // Reset file input so same file can be uploaded again if needed
+    const fileInput = document.getElementById('imageUpload');
+    if (fileInput) fileInput.value = '';
+}
+
+// 🔥 Image Upload to Canvas
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            clearModernCanvas(); // clear existing drawings
+            
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Fill background with black (since MNIST is usually white on black)
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw uploaded image dynamically fitting into canvas
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
 }
 
 function predictDigit() {
