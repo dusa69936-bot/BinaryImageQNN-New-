@@ -148,10 +148,10 @@ a:hover {
 
                 <td>
                     {% if i.status == 'waiting' %}
-                        <a href="/ActivaUsers/?uid={{ i.id }}">Activate</a>
+                        <a href="{% url 'activate_user' i.id %}">Activate</a>
                     {% else %}
                         Activated /
-                        <a href="/DeleteUser/?uid={{ i.id }}">Delete</a>
+                        <a href="{% url 'delete_user' i.id %}">Delete</a>
                     {% endif %}
                 </td>
 
