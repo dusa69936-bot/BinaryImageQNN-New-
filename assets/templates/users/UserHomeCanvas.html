@@ -55,7 +55,7 @@
 
                 <!-- 🔥 LIVE ACCURACY DISPLAY -->
                 <h4 style="margin-top:15px; color:#22d3ee;">
-                    Prediction Accuracy: <span id="live-accuracy">0%</span>
+                    Live Accuracy: <span id="live-accuracy">0%</span>
                 </h4>
             </div>
         </div>
@@ -265,6 +265,7 @@ function predictDigit() {
         document.getElementById('predicted-val').innerText = data.prediction;
 
         // 🔥 Logic to update correct count
+        totalTrials++;
         if (data.result) {
             badge.className = "badge success";
             icon.className = "fa-solid fa-circle-check";
@@ -276,8 +277,9 @@ function predictDigit() {
             text.innerText = "Prediction Discrepancy";
         }
 
-        // 🔥 Update Live Accuracy using backend data (Model Confidence for this single image)
-        document.getElementById("live-accuracy").innerText = data.accuracy + "%";
+        // 🔥 Dynamic Live Accuracy Calculation
+        const percentage = ((totalCorrect / totalTrials) * 100).toFixed(2);
+        document.getElementById("live-accuracy").innerText = percentage + "%";
     })
     .catch(() => {
         btn.innerHTML = "Retry";
