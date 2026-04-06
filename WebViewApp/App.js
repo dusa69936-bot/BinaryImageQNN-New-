@@ -4,17 +4,15 @@ import { WebView } from 'react-native-webview';
 
 export default function App() {
   const webViewRef = useRef(null);
-  const [canGoBack, setCanGoBack] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const canGoBackRef = useRef(false);
 
   // Replace this URL with your actual frontend URL or Local IP Address
-  // E.g., http://172.19.16.169:8000 or a production URL
   const targetUrl = 'https://binaryimageqnn-1.onrender.com';
 
   // Handle Android back button
   React.useEffect(() => {
     const handleBackButton = () => {
-      if (canGoBack && webViewRef.current) {
+      if (canGoBackRef.current && webViewRef.current) {
         webViewRef.current.goBack();
         return true;
       }
@@ -25,7 +23,7 @@ export default function App() {
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
     };
-  }, [canGoBack]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,19 +32,16 @@ export default function App() {
         ref={webViewRef}
         source={{ uri: targetUrl }}
         style={styles.webview}
-        onNavigationStateChange={(navState) => {
-          setCanGoBack(navState.canGoBack);
-        }}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
+        originWhitelist={['*']}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        sharedCookiesEnabled={true}
+        thirdPartyCookiesEnabled={true}
+        setSupportMultipleWindows={false}
+        onNavigationStateChange={(navState) => {
+          canGoBackRef.current = navState.canGoBack;
+        }}
       />
-      {loading && (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      )}
     </SafeAreaView>
   );
 }
