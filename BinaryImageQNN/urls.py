@@ -49,6 +49,7 @@ urlpatterns = [
     path('eda_analysis/', userViews.eda_analysis, name="eda_analysis"),
     path('QNNAccuracy/', userViews.QNNAccuracy, name="QNNAccuracy"),
     path('UserTestCanvasMNIST/', userViews.UserTestCanvasMNIST, name="UserTestCanvasMNIST"),
+    path('UserRealWorldExample/', userViews.UserRealWorldExample, name="UserRealWorldExample"),
 
     # =========================
     # QNN / MNIST

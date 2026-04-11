@@ -7,7 +7,7 @@ export default function App() {
   const canGoBackRef = useRef(false);
 
   // Replace this URL with your actual frontend URL or Local IP Address
-  const targetUrl = 'https://binaryimageqnn-1.onrender.com';
+  const targetUrl = 'http://192.168.1.10:8000';
 
   // Handle Android back button
   React.useEffect(() => {

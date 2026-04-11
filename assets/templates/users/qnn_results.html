@@ -556,8 +556,14 @@
                             <i class="fa-solid fa-mobile-screen-button" style="margin-right: 8px;"></i> LIVE PROJECT MIRROR
                         </div>
 
+                        <!-- Connection Toggle -->
+                        <div style="display: flex; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 5px; margin-bottom: 25px; width: 100%; max-width: 300px;">
+                            <button onclick="switchMobileMode('local')" id="btn-mobile-local" style="flex: 1; background: #22d3ee; color: #000; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.3s;">LOCAL WI-FI</button>
+                            <button onclick="switchMobileMode('cloud')" id="btn-mobile-cloud" style="flex: 1; background: transparent; color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.3s;">CLOUD (NGROK)</button>
+                        </div>
+
                         <div style="position: relative; padding: 10px; background: #fff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); margin-bottom: 20px;">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=http://{{ local_ip }}:8000/" style="width: 180px; height: 180px; display: block;">
+                            <img id="mobile-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=http://{{ local_ip }}:8000/" style="width: 180px; height: 180px; display: block;">
                             
                             <!-- Scanning corners -->
                             <div style="position: absolute; top: -5px; left: -5px; width: 30px; height: 30px; border-top: 3px solid #22d3ee; border-left: 3px solid #22d3ee; border-radius: 4px;"></div>
@@ -567,22 +573,22 @@
                         </div>
 
                         <div style="text-align: center; max-width: 350px;">
-                            <div style="font-size: 0.85rem; color: #fff; font-weight: 700; margin-bottom: 8px;">Scan to Start Mobile Session</div>
-                            <div style="font-size: 0.7rem; color: #94a3b8; line-height: 1.6;">
-                                Bridge your smartphone to the QNN backend. Mirror the full project dashboard, real-time scanners, and diagnostic canvas directly on your mobile browser.
+                            <div id="mobile-status-title" style="font-size: 0.85rem; color: #fff; font-weight: 700; margin-bottom: 8px;">Scan to Start Local Session</div>
+                            <div id="mobile-status-desc" style="font-size: 0.7rem; color: #94a3b8; line-height: 1.6;">
+                                Ensure your phone and laptop are on the same Wi-Fi. Bridge your smartphone directly to the local development server.
                             </div>
                             
                             <!-- Security Guidance Tip -->
                             <div style="margin-top: 15px; padding: 10px; background: rgba(251,191,36,0.05); border: 1px solid rgba(251,191,36,0.2); border-radius: 8px; text-align: left;">
                                 <div style="font-size: 0.6rem; color: #fbbf24; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">
-                                    <i class="fa-solid fa-circle-exclamation"></i> Mobile Security Tip
+                                    <i class="fa-solid fa-circle-exclamation"></i> Connection Tip
                                 </div>
-                                <div style="font-size: 0.62rem; color: #fbbf24; opacity: 0.9;">
-                                    If you see a "Not Secure" or "HTTPS" warning on your phone, click <strong>"Continue to site"</strong> or <strong>"Advanced → Proceed"</strong>. This is normal for local developer testing.
+                                <div id="mobile-tip-text" style="font-size: 0.62rem; color: #fbbf24; opacity: 0.9;">
+                                    If the site doesn't load, check if your laptop's Firewall is blocking port 8000.
                                 </div>
                             </div>
 
-                            <div style="margin-top: 15px; font-family: monospace; font-size: 0.65rem; color: #22d3ee; background: rgba(34,211,238,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block;">
+                            <div id="mobile-endpoint-display" style="margin-top: 15px; font-family: monospace; font-size: 0.65rem; color: #22d3ee; background: rgba(34,211,238,0.1); padding: 5px 12px; border-radius: 20px; display: inline-block;">
                                 End-Point: http://{{ local_ip }}:8000/
                             </div>
                         </div>
@@ -1291,15 +1297,29 @@
         </div>
 
         <div id="deploy-success" style="display: none; text-align: center; padding: 40px 0;">
-            <i class="fa-solid fa-circle-check" style="font-size: 6rem; color: #10b981; margin-bottom: 30px;"></i>
-            <h3 style="color: #fff; font-weight: 950; letter-spacing: 2px; margin-bottom: 15px;">DEPLOYMENT ONLINE!</h3>
-            <div style="background: transparent; border: 1px solid rgba(16,185,129,0.4); border-radius: 15px; padding: 15px; margin-bottom: 25px; box-shadow: 0 0 15px rgba(16,185,129,0.1);">
-                <a href="https://founder-dangling-sacred.ngrok-free.dev/QNNAccuracy/" target="_blank" style="color: #4ade80; font-family: monospace; font-size: 1.1rem; text-decoration: none; font-weight: bold;">
-                    https://founder-dangling-sacred.ngrok-free.dev/
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 10px;"></i>
-                </a>
+            <i class="fa-solid fa-circle-check" style="font-size: 6rem; color: #10b981; margin-bottom: 20px;"></i>
+            <h3 style="color: #fff; font-weight: 950; letter-spacing: 2px; margin-bottom: 8px;">DEPLOYMENT ONLINE!</h3>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">Ngrok tunnel active. Paste your live ngrok URL below to open globally.</p>
+
+            <!-- Step instructions -->
+            <div style="background: rgba(16,185,129,0.05); border: 1px dashed rgba(16,185,129,0.3); border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; text-align: left;">
+                <div style="font-size: 0.65rem; color: #10b981; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 800;">📋 How to get your ngrok URL</div>
+                <div style="font-size: 0.75rem; color: #cbd5e1; line-height: 2;">
+                    1. Open a new terminal window<br>
+                    2. Run: <code style="color: #fbbf24; background: rgba(251,191,36,0.1); padding: 2px 8px; border-radius: 4px;">ngrok http 8000</code><br>
+                    3. Copy the <strong style="color: #fff;">Forwarding</strong> URL (e.g. <code style="color: #4ade80;">https://xxxx.ngrok-free.app</code>)<br>
+                    4. Paste it below and click <strong style="color: #a855f7;">GO LIVE</strong>
+                </div>
             </div>
-            <p style="color: #94a3b8; font-size: 0.9rem;">Your project dashboard is now globally accessible. Click the link above to open!</p>
+
+            <!-- URL Input + Open Button -->
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                <input type="text" id="ngrok-url-input" placeholder="https://xxxx.ngrok-free.app" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(16,185,129,0.4); border-radius: 10px; padding: 12px 15px; color: #4ade80; font-family: monospace; font-size: 0.9rem; outline: none;">
+                <button onclick="openNgrokLink()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 22px; border-radius: 10px; font-weight: 900; font-size: 0.9rem; cursor: pointer; letter-spacing: 1px; white-space: nowrap;">
+                    <i class="fa-solid fa-rocket"></i> GO LIVE
+                </button>
+            </div>
+            <p style="color: #64748b; font-size: 0.75rem;">Your public URL will open in a new tab. Share it with anyone worldwide!</p>
         </div>
     </div>
 </div>
@@ -1685,6 +1705,61 @@
         document.getElementById('deploy-success').style.display = 'none';
         document.getElementById('deploy-bar').style.width = '0%';
         document.getElementById('rocket-launch').style.transform = 'translateY(0)';
+        const input = document.getElementById('ngrok-url-input');
+        if(input) input.value = '';
+    }
+
+    function openNgrokLink() {
+        const input = document.getElementById('ngrok-url-input');
+        let url = input ? input.value.trim() : '';
+        if (!url) {
+            alert('Please paste your ngrok URL first!');
+            return;
+        }
+        if (!url.startsWith('http')) url = 'https://' + url;
+        window.open(url, '_blank');
+    }
+
+    function switchMobileMode(mode) {
+        const localBtn = document.getElementById('btn-mobile-local');
+        const cloudBtn = document.getElementById('btn-mobile-cloud');
+        const qrImg = document.getElementById('mobile-qr-img');
+        const title = document.getElementById('mobile-status-title');
+        const desc = document.getElementById('mobile-status-desc');
+        const tip = document.getElementById('mobile-tip-text');
+        const display = document.getElementById('mobile-endpoint-display');
+        
+        const localIp = "{{ local_ip }}";
+        const ngrokUrl = document.getElementById('ngrok-url-input') ? document.getElementById('ngrok-url-input').value.trim() : '';
+
+        if (mode === 'local') {
+            localBtn.style.background = '#22d3ee'; localBtn.style.color = '#000';
+            cloudBtn.style.background = 'transparent'; cloudBtn.style.color = '#fff';
+            
+            const url = `http://${localIp}:8000/UserTestCanvasMNIST/?preview=1`;
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+            title.innerText = "Scan to Start Local Session";
+            desc.innerText = "Ensure your phone and laptop are on the same Wi-Fi. Bridge your smartphone directly to the local development server.";
+            tip.innerText = "If the site doesn't load, check if your laptop's Firewall is blocking port 8000.";
+            display.innerText = `End-Point: http://${localIp}:8000/`;
+        } else {
+            if (!ngrokUrl) {
+                alert("Please paste your Ngrok URL in the Cloud Deployment modal first!");
+                return;
+            }
+            cloudBtn.style.background = '#a855f7'; cloudBtn.style.color = '#fff';
+            localBtn.style.background = 'transparent'; localBtn.style.color = '#fff';
+            
+            let cleanNgrok = ngrokUrl;
+            if (!cleanNgrok.startsWith('http')) cleanNgrok = 'https://' + cleanNgrok;
+            const url = `${cleanNgrok}/UserTestCanvasMNIST/?preview=1`;
+            
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+            title.innerText = "Scan to Start Cloud Session";
+            desc.innerText = "Works from anywhere! This uses your secure ngrok tunnel to reach the project dashboard via the internet.";
+            tip.innerText = "Make sure the ngrok tunnel status in your terminal is 'online'.";
+            display.innerText = `End-Point: ${cleanNgrok}/`;
+        }
     }
 
     function startDeploymentSimulation() {
