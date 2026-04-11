@@ -276,9 +276,8 @@ function speakText(text) {
         msg.pitch = 1.1; 
         
         synth.cancel();
-        setTimeout(() => {
-            window.speechSynthesis.speak(msg);
-        }, 30);
+        // 🔥 IMMEDIATE SPEAK (Critical for Mobile Browsers)
+        window.speechSynthesis.speak(msg);
     };
 
     if (synth.getVoices().length === 0 && 'onvoiceschanged' in synth) {
@@ -468,7 +467,8 @@ function changeLanguage(l) {
         }
     });
 
-    speakTranslated('lang');
+    // 🔥 Force Immediate Announcement
+    setTimeout(() => speakTranslated('lang'), 10);
     toggleLangDropdown();
 }
 function toggleSound() { isSoundOn = !isSoundOn; localStorage.setItem('qnn_sound', isSoundOn?'on':'off'); updateSoundUI(); }
