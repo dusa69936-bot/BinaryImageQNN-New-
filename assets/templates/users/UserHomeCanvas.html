@@ -218,6 +218,15 @@ let isSoundOn = localStorage.getItem('qnn_sound') !== 'off';
 let currentLang = localStorage.getItem('qnn_lang') || 'en';
 const synth = window.speechSynthesis;
 
+// 🔥 Mobile Voice Unlocker (Crucial for Mobile/Webview Browsers)
+function unlockVoice() {
+    if (!('speechSynthesis' in window)) return;
+    const utterance = new SpeechSynthesisUtterance('');
+    utterance.volume = 0;
+    window.speechSynthesis.speak(utterance);
+    console.log("Voice system unlocked for mobile");
+}
+
 // 🚀 Guaranteed Phonetic Force Engine (Fixed Silence Issue)
 function speakText(text) {
     if (!('speechSynthesis' in window)) return;
@@ -256,7 +265,6 @@ function speakText(text) {
             const hiVoice = voices.find(v => v.lang.includes('hi-IN'));
             if (hiVoice) finalLang = 'hi-IN';
             else {
-                // Map Hindi numbers to h-prefixed phonetic keys for replacement
                 for (let i=0; i<=9; i++) msgText = msgText.replace(i.toString(), phonetics['h'+i]);
                 for (let k in phonetics) { if(!k.startsWith('h')) msgText = msgText.replace(k, phonetics[k]); }
             }
@@ -264,14 +272,16 @@ function speakText(text) {
 
         const msg = new SpeechSynthesisUtterance(msgText);
         msg.lang = finalLang;
-        msg.rate = 0.8; // Slightly faster for natural flow but still clear
-        msg.pitch = 1.0;
+        msg.rate = 1.0; 
+        msg.pitch = 1.1; 
         
         synth.cancel();
-        setTimeout(() => synth.speak(msg), 50);
+        setTimeout(() => {
+            window.speechSynthesis.speak(msg);
+        }, 30);
     };
 
-    if (synth.getVoices().length === 0) {
+    if (synth.getVoices().length === 0 && 'onvoiceschanged' in synth) {
         synth.onvoiceschanged = () => trySpeak();
     } else {
         trySpeak();
@@ -280,9 +290,9 @@ function speakText(text) {
 
 function speakTranslated(key, params={}) {
     const translations = {
-        'en': { 'pred': 'The predicted digit is @num', 'lang': 'Language changed to English', 'error': 'Prediction Discrepancy' },
-        'te': { 'pred': 'అంచనా వేయబడినది @num', 'lang': 'లాంగ్వేజ్ తెలుగుకి మార్చబడింది', 'error': 'ప్రిడిక్షన్ డిస్క్రిపెన్సీ' },
-        'hi': { 'pred': 'भविष्यवाणी की गई संख्या @num है', 'lang': 'भाषा हिंदी में बदल दी गई है', 'error': 'भविष्यवाणी विसंगति' }
+        'en': { 'pred': 'The Prediction Result is @num', 'lang': 'Voice Language changed to English', 'error': 'System Detected Prediction Discrepancy' },
+        'te': { 'pred': 'అంచనా వేయబడిన సంఖ్య @num', 'lang': 'భాష తెలుగులోకి మార్చబడింది', 'error': 'ఫలితంలో తేడాని సిస్టమ్ గుర్తించింది' },
+        'hi': { 'pred': 'भविष्यवाणी की गई संख्या @num है', 'lang': 'भाषा अब हिंदी में बदल दी गई है', 'error': 'सिस्टम ने विसंगति का पता लगाया' }
     };
     let text = translations[currentLang][key] || translations['en'][key];
     for(let p in params) text = text.replace(`@${p}`, params[p]);
@@ -346,6 +356,9 @@ function predictDigit() {
     const btn = document.getElementById("predictBtn");
     const actual = document.getElementById("actual_digit").value;
     if (actual === "") { alert("Please enter expected digit first."); return; }
+    
+    // 🔥 Unlock Voice on First Interaction
+    unlockVoice();
     
     btn.innerHTML = 'Analyzing <i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
 
