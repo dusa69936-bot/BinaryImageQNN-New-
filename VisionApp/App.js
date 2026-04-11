@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 
 export default function App() {
   const webViewRef = useRef(null);
-  const targetUrl = 'https://binary-3.onrender.com';
+  const targetUrl = 'http://192.168.1.3:8000';
 
   React.useEffect(() => {
     const handleBackButton = () => {

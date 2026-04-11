@@ -44,7 +44,7 @@
                         style="flex: 1; padding: 15px; border-radius: 30px; font-weight: bold; border: none; cursor: pointer; background: linear-gradient(135deg, #6366f1, #a855f7); color: white;">
                         <i class="fa-solid fa-microchip"></i> Run Quantum Inference
                     </button>
-                    <button id="voiceBtn" onclick="toggleVoice()" class="btn-outline" style="width: 55px; border-radius: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #4ade80; cursor: pointer; transition: 0.3s;">
+                    <button id="voiceBtn" onclick="testVoice()" class="btn-outline" style="width: 55px; border-radius: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #4ade80; cursor: pointer; transition: 0.3s;">
                         <i class="fa-solid fa-microphone"></i>
                     </button>
                 </div>
@@ -224,7 +224,35 @@ function unlockVoice() {
     const utterance = new SpeechSynthesisUtterance('');
     utterance.volume = 0;
     window.speechSynthesis.speak(utterance);
-    console.log("Voice system unlocked for mobile");
+    
+    // 🔥 Warm up HTML5 Audio engine for the fallback
+    const dummyAudio = document.getElementById('audio-fallback') || document.createElement('audio');
+    dummyAudio.id = 'audio-fallback';
+    dummyAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA== "; // Silent 1-byte wave
+    dummyAudio.play().catch(() => {});
+
+    console.log("Voice & Audio system unlocked for mobile app");
+    // Once unlocked, we can remove these listeners
+    document.removeEventListener('click', unlockVoice);
+    document.removeEventListener('touchstart', unlockVoice);
+}
+
+// Attach listeners
+document.addEventListener('click', unlockVoice);
+document.addEventListener('touchstart', unlockVoice);
+
+function testVoice() {
+    unlockVoice();
+    const status = document.getElementById('voice-status');
+    status.innerText = "Testing...";
+    status.style.color = "#3b82f6";
+    
+    speakText("Voice System Online. System ready for prediction.");
+    
+    setTimeout(() => {
+        status.innerText = "System Active";
+        status.style.color = "#4ade80";
+    }, 2000);
 }
 
 // 🚀 Guaranteed Phonetic Force Engine (Fixed Silence Issue)
@@ -255,29 +283,24 @@ function speakText(text) {
         let msgText = text;
         let finalLang = 'en-US'; 
         
-        if (currentLang === 'te') {
-            const teVoice = voices.find(v => v.lang.includes('te-IN'));
-            if (teVoice) finalLang = 'te-IN';
-            else {
-                for (let k in phonetics) { if(!k.startsWith('h')) msgText = msgText.replace(k, phonetics[k]); }
-            }
-        } else if (currentLang === 'hi') {
-            const hiVoice = voices.find(v => v.lang.includes('hi-IN'));
-            if (hiVoice) finalLang = 'hi-IN';
-            else {
-                for (let i=0; i<=9; i++) msgText = msgText.replace(i.toString(), phonetics['h'+i]);
-                for (let k in phonetics) { if(!k.startsWith('h')) msgText = msgText.replace(k, phonetics[k]); }
-            }
-        }
+        if (currentLang === 'te') finalLang = 'te-IN';
+        else if (currentLang === 'hi') finalLang = 'hi-IN';
 
         const msg = new SpeechSynthesisUtterance(msgText);
         msg.lang = finalLang;
-        msg.rate = 1.0; 
-        msg.pitch = 1.1; 
         
-        synth.cancel();
-        // 🔥 IMMEDIATE SPEAK (Critical for Mobile Browsers)
+        // 🔥 Android App Fallback (If Speech API is blocked)
+        const audioFallback = document.getElementById('audio-fallback') || document.createElement('audio');
+        audioFallback.id = 'audio-fallback';
+        audioFallback.style.display = 'none';
+        
+        // Force try native first
         window.speechSynthesis.speak(msg);
+        
+        // Backup: Use Google TTS for absolute guarantee in Apps
+        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(msgText)}&tl=${finalLang.split('-')[0]}&client=tw-ob`;
+        audioFallback.src = ttsUrl;
+        audioFallback.play().catch(e => console.log("Audio play blocked, needs touch"));
     };
 
     if (synth.getVoices().length === 0 && 'onvoiceschanged' in synth) {
@@ -438,6 +461,7 @@ function predictDigit() {
 function playBeep(f, d) {
     if(!isSoundOn) return;
     const c = new (window.AudioContext || window.webkitAudioContext)();
+    if (c.state === 'suspended') c.resume(); // 🔥 Force resume on click
     const o = c.createOscillator(); const g = c.createGain();
     o.frequency.value = f; o.connect(g); g.connect(c.destination);
     o.start(); g.gain.exponentialRampToValueAtTime(0.00001, c.currentTime + d); o.stop(c.currentTime + d);
