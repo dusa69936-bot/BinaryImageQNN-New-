@@ -20,7 +20,7 @@ SECRET_KEY = 'django-secret-key'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # =========================
@@ -180,4 +180,7 @@ ALLOWED_HOSTS = ['*']  # For Render deployment flexibility
 CSRF_TRUSTED_ORIGINS = [
     'https://binary-3.onrender.com',
     'https://*.onrender.com',
+    'https://founder-dangling-sacred.ngrok-free.dev',
+    'https://*.ngrok-free.app',
+    'https://*.ngrok.io',
 ]

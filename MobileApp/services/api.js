@@ -3,14 +3,15 @@ import axios from 'axios';
 // Replace this with your actual Render URL (e.g., https://your-backend.onrender.com)
 // Your exact Wi-Fi IP automatically retrieved for the physical phone to connect:
 const RENDER_URL = 'https://binary-3.onrender.com';
-const LOCAL_URL = 'http://172.19.5.229:8000'; 
+const NGROK_URL = 'https://founder-dangling-sacred.ngrok-free.dev'; 
 
-const BASE_URL = LOCAL_URL; // Strictly connecting to LOCAL Django server
+const BASE_URL = NGROK_URL; // Connecting via ngrok for remote access
 
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true',
   },
 });
 

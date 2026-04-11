@@ -21,8 +21,8 @@
             background-color: #0f172a;
 
             background-image: 
-            linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)),
-            url("/static/img/image.png");
+            linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+            url("{% static 'img/digits_grid_bg.png' %}");
 
             background-size: cover;
             background-position: center;
@@ -120,6 +120,7 @@
                 <li><a href="{% url 'eda_analysis' %}">EDA</a></li>
                 <li><a href="{% url 'QNNAccuracy' %}">Accuracy</a></li>
                 <li><a href="{% url 'UserTestCanvasMNIST' %}">Canvas</a></li>
+                <li><a href="{% url 'UserRealWorldExample' %}">Real World</a></li>
                 <li><a href="{% url 'UserLogout' %}" class="btn-outline">Logout</a></li>
             {% else %}
                 <li><a href="{% url 'UserLogin' %}">Login</a></li>
