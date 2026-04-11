@@ -6,8 +6,8 @@ export default function App() {
   const webViewRef = useRef(null);
   const canGoBackRef = useRef(false);
 
-  // Replace this URL with your actual frontend URL or Local IP Address
-  const targetUrl = 'http://192.168.1.10:8000';
+  // 🔥 Your live Production URL
+  const targetUrl = 'https://binary-3.onrender.com';
 
   // Handle Android back button
   React.useEffect(() => {

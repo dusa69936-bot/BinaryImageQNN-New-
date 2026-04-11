@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "VisionApp",
+    "slug": "VisionApp",
+    "version": "1.0.0",
+    "android": {
+      "package": "com.pujitha.qnnvision"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5ce9d11b-63b3-45e2-b992-c78ccbba0024"
+      }
+    }
+  }
+}
