@@ -38,6 +38,8 @@ export default function App() {
         sharedCookiesEnabled={true}
         thirdPartyCookiesEnabled={true}
         setSupportMultipleWindows={false}
+        mediaPlaybackRequiresUserAction={false} // 🔥 Allows speech/sound without restriction
+        allowsInlineMediaPlayback={true}        // 🔥 For iOS support
         onNavigationStateChange={(navState) => {
           canGoBackRef.current = navState.canGoBack;
         }}
