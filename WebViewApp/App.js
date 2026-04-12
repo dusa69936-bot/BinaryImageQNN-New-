@@ -1,11 +1,13 @@
-import React, { useRef, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, BackHandler, ActivityIndicator, View, Alert } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { StyleSheet, SafeAreaView, StatusBar, BackHandler, ActivityIndicator, View, Alert, Text, Vibration } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Speech from 'expo-speech'; // 🔥 The Secret Sauce for Voice
 
 export default function App() {
   const webViewRef = useRef(null);
   const canGoBackRef = useRef(false);
+  const [debugText, setDebugText] = useState("Voi-Bridge Ready");
+  const [lastMessage, setLastMessage] = useState("");
 
   // 🔥 Your live Production URL
   const targetUrl = 'https://binaryimageqnn-1.onrender.com';
@@ -38,25 +40,17 @@ export default function App() {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'SPEAK' && data.text) {
-        console.log("Speaking via Bridge:", data.text, data.lang);
+        setDebugText("Speaking...");
+        setLastMessage(data.text);
+        Vibration.vibrate(100); // 📳 Shake phone on voice request
         
-        // 🔥 DEBUG ALERT (మీకు మొబైల్ లో చూడటం కోసం)
-        Alert.alert("Voice Bridge", "Received: " + data.text); 
-
-        // We stop any ongoing speech to start the new one fresh
         Speech.stop();
-
         Speech.speak(data.text, {
           language: data.lang || 'en-US',
           pitch: 1.0,
           rate: 0.9,
-          onStart: () => console.log("Speech started"),
-          onDone: () => console.log("Speech finished"),
-          onError: (e) => {
-            console.log("Speech engine error:", e);
-            // Fallback to English if original language fails
-            Speech.speak(data.text, { language: 'en-US' });
-          }
+          onDone: () => setDebugText("Voice Done"),
+          onError: () => setDebugText("Voice Error!")
         });
       }
     } catch (e) {
@@ -65,8 +59,9 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#020617" />
+      
       <WebView
         ref={webViewRef}
         source={{ uri: targetUrl }}
@@ -77,18 +72,28 @@ export default function App() {
         sharedCookiesEnabled={true}
         thirdPartyCookiesEnabled={true}
         setSupportMultipleWindows={false}
-        mediaPlaybackRequiresUserAction={false} // 🔥 Important for Auto-Speech
-        allowsInlineMediaPlayback={true}        // 🔥 Important for iOS
+        mediaPlaybackRequiresUserAction={false} 
+        allowsInlineMediaPlayback={true}        
         allowsFullscreenVideo={true}
         allowFileAccess={true}
         scalesPageToFit={true}
         mixedContentMode="always"
-        onMessage={handleMessage} // 🔥 Hook up the bridge
+        onMessage={handleMessage} 
         onNavigationStateChange={(navState) => {
           canGoBackRef.current = navState.canGoBack;
         }}
       />
-    </SafeAreaView>
+
+      {/* 🔥 DEBUG OVERLAY: మీకు మొబైల్ లో కనిపించడం కోసం */}
+      <View style={{ 
+          position: 'absolute', bottom: 20, left: 20, right: 20, 
+          backgroundColor: 'rgba(0,0,0,0.8)', padding: 15, borderRadius: 20,
+          borderWidth: 1, borderColor: '#4ade80', pointerEvents: 'none'
+      }}>
+        <Text style={{ color: '#4ade80', fontWeight: 'bold', fontSize: 12 }}>System: {debugText}</Text>
+        <Text style={{ color: 'white', marginTop: 5, fontSize: 10 }}>Last: {lastMessage || "None"}</Text>
+      </View>
+    </View>
   );
 }
 
