@@ -7,7 +7,7 @@ export default function App() {
   const canGoBackRef = useRef(false);
 
   // 🔥 Your live Production URL
-  const targetUrl = 'https://binary-image-qnn-new.onrender.com';
+  const targetUrl = 'https://binaryimageqnn-1.onrender.com';
 
   // Handle Android back button
   React.useEffect(() => {
@@ -38,8 +38,12 @@ export default function App() {
         sharedCookiesEnabled={true}
         thirdPartyCookiesEnabled={true}
         setSupportMultipleWindows={false}
-        mediaPlaybackRequiresUserAction={false} // 🔥 Allows speech/sound without restriction
-        allowsInlineMediaPlayback={true}        // 🔥 For iOS support
+        mediaPlaybackRequiresUserAction={false} // 🔥 Important for Auto-Speech
+        allowsInlineMediaPlayback={true}        // 🔥 Important for iOS
+        allowsFullscreenVideo={true}
+        allowFileAccess={true}
+        scalesPageToFit={true}
+        mixedContentMode="always"
         onNavigationStateChange={(navState) => {
           canGoBackRef.current = navState.canGoBack;
         }}

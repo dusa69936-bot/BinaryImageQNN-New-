@@ -469,92 +469,75 @@ function initAnimatedTitle() {
 // Update speakText to respect sound setting
 // 🚀 Guaranteed Phonetic Force Engine (Fixed Silence Issue)
 function speakText(text) {
-    if (!('speechSynthesis' in window)) return;
     if (localStorage.getItem('qnn_sound') === 'off') return;
-
+    
     const synth = window.speechSynthesis;
-    synth.resume();
-    // NEVER use cancel() here as it can brick the queue on some Chrome versions
-
-    // Direct Phonetics for systems with NO Indic voices
-    const phonetics = {
-        'లాంగ్వేజ్ తెలుగుకి మార్చబడింది': 'Language Telugu kee marchabadindee',
-        'భాష తెలుగులోకి మార్చబడింది': 'Bhasha Telugu-loki marchabadindee',
-        'भाषा हिंदी में बदल दी गई है': 'Bhasha hindi may badal dee guyee hai',
-        'చెక్ అప్‌లోడ్ చేయబడింది. స్కానింగ్ జరుగుతోంది, దయచేసి వేచి ఉండండి.': 'Check upload che-yaba-dindi. Scanning jara-gu-tondi, daya-chesi vechi-un-dandi.',
-        'चेक अपलोड हो गया। स्कैनिंग चल रही है, कृपया प्रतीक्षा करें।': 'Check upload ho-gaya. Scanning chal-rahi-hai, kripaya pra-teeksha-kare.',
-        'స్కాన్ పూర్తయింది. గుర్తించబడిన మొత్తం @amount రూపాయలు.': 'Scan poo-rta-yindi. Gur-tin-cha-badina mottam @amount rupayalu.',
-        'स्कैन पूरा हुआ। पहचानी गई राशि @amount रुपये है।': 'Scan poora-hua. Paha-chani-gayi rashi @amount rupaye hai.',
-        'అంచనా ఖచ్చితమైనది. ఫలితాలు సరిపోయాయి.': 'An-chana kha-chita-maina-di. Phalitalu sari-poyayi.',
-        'भविष्यवाणी सटीक है। परिणाम मेल खाते हैं।': 'Bha-vishy-a-vani sateek hai. Parinam mail-khate-hai.',
-        'అంచనాలో తేడా ఉంది. ఫలితాలు సరిపోలలేదు.': 'An-chana-lo teda undi. Phali-talu sari-pola-ledu.',
-        'भविष्यवाणी में विसंगति है। परिणाम मेल नहीं खाते।': 'Bha-vishy-a-vani may vi-sangati-hai. Pari-nam mail-nahi-khate.'
-    };
-
-    const trySpeak = (attempt = 0) => {
-        const voices = synth.getVoices();
-        
-        // Use phonetic version if native voices might be missing
-        let msgText = text;
+    
+    const trySpeak = () => {
         let finalLang = 'en-US'; 
-        
-        let nativeVoice = voices.find(v => v.lang.includes('te-IN') || v.lang.includes('hi-IN'));
-        
-        if (!nativeVoice && currentLang !== 'en') {
-            // Check for matching phonetic key, handling @amount pattern
-            let matchedKey = Object.keys(phonetics).find(key => {
-                const regexKey = key.replace('@amount', '\\d+');
-                return new RegExp(`^${regexKey}$`).test(text);
-            });
+        if (currentLang === 'te') finalLang = 'te-IN';
+        else if (currentLang === 'hi') finalLang = 'hi-IN';
 
-            if (matchedKey) {
-                let phoneticVal = phonetics[matchedKey];
-                // If it's a dynamic amount message, extract the number from the original text
-                if (matchedKey.includes('@amount')) {
-                    const numMatch = text.match(/\d+/);
-                    if (numMatch) phoneticVal = phoneticVal.replace('@amount', numMatch[0]);
-                }
-                msgText = phoneticVal;
-            }
-            finalLang = 'en-US'; 
-        } else if (nativeVoice) {
-            finalLang = (currentLang === 'te') ? 'te-IN' : (currentLang === 'hi' ? 'hi-IN' : 'en-US');
-        }
-
-        const msg = new SpeechSynthesisUtterance(msgText);
+        const msg = new SpeechSynthesisUtterance(text);
         msg.lang = finalLang;
-        msg.rate = 0.85;
-        msg.volume = 1.0;
+        msg.rate = 0.9;
         msg.pitch = 1.0;
+        
+        const voices = synth.getVoices();
+        const preferredVoice = voices.find(v => v.lang.startsWith(finalLang.split('-')[0]));
+        if(preferredVoice) msg.voice = preferredVoice;
 
-        // Force voice selection only if native exists
-        if (nativeVoice) {
-            let specificVoice = voices.find(v => v.lang.toLowerCase().includes(finalLang.toLowerCase()));
-            if (specificVoice) msg.voice = specificVoice;
-        }
-
+        synth.cancel(); 
         synth.speak(msg);
         
-        // Keep-alive heartbeat
-        const hb = setInterval(() => {
-            if (!synth.speaking) clearInterval(hb);
-            else synth.resume();
-        }, 500);
+        // 🔥 Android App Fallback (Google TTS)
+        const audioFallback = document.getElementById('audio-fallback') || document.createElement('audio');
+        audioFallback.id = 'audio-fallback';
+        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${finalLang.split('-')[0]}&client=tw-ob`;
+        
+        setTimeout(() => {
+            if (!synth.speaking) {
+                audioFallback.src = ttsUrl;
+                audioFallback.play().catch(e => console.log("Manual interaction still needed"));
+            }
+        }, 300);
     };
 
-    // If voices empty, wait a tiny bit
-    if (synth.getVoices().length === 0) {
-        setTimeout(trySpeak, 200);
+    if (synth.getVoices().length === 0 && 'onvoiceschanged' in synth) {
+        synth.onvoiceschanged = () => trySpeak();
     } else {
         trySpeak();
     }
 }
 
-// Pre-load voices
-if ('speechSynthesis' in window) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+// 🔥 Mobile Voice Unlocker (Crucial for Mobile/Webview Browsers)
+function unlockVoice() {
+    console.log("Attempting to unlock audio context...");
+    if (!('speechSynthesis' in window)) return;
+    
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance('System Initialized');
+    utterance.volume = 0;
+    synth.speak(utterance);
+    
+    // 🔥 Warm up HTML5 Audio engine for the fallback
+    const dummyAudio = document.getElementById('audio-fallback') || document.createElement('audio');
+    dummyAudio.id = 'audio-fallback';
+    dummyAudio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA== "; 
+    dummyAudio.play().then(() => {
+        console.log("Audio engine warmed up");
+    }).catch((e) => {
+        console.log("Waiting for user tap to play audio");
+    });
+
+    // Remove listeners once unlocked
+    document.removeEventListener('click', unlockVoice);
+    document.removeEventListener('touchstart', unlockVoice);
+    window.speechWoken = true;
 }
+
+document.addEventListener('click', unlockVoice);
+document.addEventListener('touchstart', unlockVoice);
 
 document.addEventListener('DOMContentLoaded', () => {
     initAnimatedTitle();
@@ -562,19 +545,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateThemeUI();
     changeLanguage(currentLang);
     
-    // Wake up speech engine on first click
-    document.addEventListener('click', () => {
-       if (!window.speechWoken && 'speechSynthesis' in window) {
-           let msg = new SpeechSynthesisUtterance("");
-           msg.volume = 0;
-           window.speechSynthesis.speak(msg);
-           window.speechWoken = true;
-       }
-    }, {once: true});
-
     // Close dropdown on click outside
     window.addEventListener('click', (e) => {
-        if (!document.getElementById('lang-btn').contains(e.target)) {
+        if (document.getElementById('lang-btn') && !document.getElementById('lang-btn').contains(e.target)) {
             document.getElementById('lang-dropdown').style.display = 'none';
         }
     });
