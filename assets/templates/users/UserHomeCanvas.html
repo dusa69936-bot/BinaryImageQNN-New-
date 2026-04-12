@@ -10,7 +10,8 @@
         <p class="hero-subtitle">
             Draw a digit below to see the Deep Quantum Neural Network in action.
             <br><span style="color: #4ade80; font-size: 0.7rem; font-weight: bold;">[ ENGINE V3.1.2 - RE-DEPLOYED ]</span>
-            <div id="bridge-status-indicator" onclick="showBridgeDebug()" style="width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; display: inline-block; margin-left: 5px; vertical-align: middle; box-shadow: 0 0 5px #ef4444; cursor: pointer;"></div>
+            <div id="bridge-status-indicator" onclick="unlockAudio()" style="width: 10px; height: 10px; border-radius: 50%; background-color: #ef4444; display: inline-block; margin-left: 5px; vertical-align: middle; box-shadow: 0 0 5px #ef4444; cursor: pointer;"></div>
+            <span id="voice-unlock-text" onclick="unlockAudio()" style="color: #ef4444; font-size: 0.7rem; font-weight: bold; cursor: pointer; margin-left: 5px; animation: blink 1s infinite; display: none;">TAP TO ENABLE SOUND</span>
         </p>
     </div>
 
@@ -263,33 +264,41 @@ function testVoice() {
 // 🔥 GLOBAL BRIDGE DETECTION (Triple Lock)
 function updateBridgeStatus() {
     const statusBox = document.getElementById('bridge-status-indicator');
-    const unlockBtn = document.getElementById('voice-unlock-btn');
+    const unlockText = document.getElementById('voice-unlock-text');
     const isMobileApp = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
     
     if (statusBox) {
         statusBox.style.backgroundColor = isMobileApp ? '#4ade80' : '#ef4444'; 
         statusBox.style.boxShadow = isMobileApp ? '0 0 10px #4ade80' : '0 0 5px #ef4444';
-        statusBox.title = isMobileApp ? "Connected to Mobile" : "Not Connected - Click for Info";
     }
 
-    // If red dot and NOT unlocked yet, show the emergency button
+    // Show manual unlock hint for old APKs
     if (!isMobileApp && !window.audioUnlocked) {
-        if(unlockBtn) unlockBtn.style.display = 'flex';
+        if(unlockText) unlockText.style.display = 'inline-block';
     } else {
-        if(unlockBtn) unlockBtn.style.display = 'none';
+        if(unlockText) unlockText.style.display = 'none';
+        if(statusBox) statusBox.onclick = showBridgeDebug; // Restore debug on green
     }
 }
 setInterval(updateBridgeStatus, 1000);
 
+// Add blink animation to style
+const style = document.createElement('style');
+style.innerHTML = `@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }`;
+document.head.appendChild(style);
+
 // 🔥 Audio Unlocker for non-bridge environments
 function unlockAudio() {
     window.audioUnlocked = true;
-    const silentMsg = new SpeechSynthesisUtterance(" ");
-    window.speechSynthesis.speak(silentMsg);
     
-    speakText("System Voice Enabled");
-    document.getElementById('voice-unlock-btn').style.display = 'none';
+    // Play a short beep to confirm unlock
+    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=System%20Voice%20Active&tl=en&client=tw-ob`;
+    const audio = new Audio(ttsUrl);
+    audio.play();
+
+    document.getElementById('voice-unlock-text').style.display = 'none';
     localStorage.setItem('qnn_voice_unlocked', 'true');
+    alert("System Voice Unlocked! Sound will play now.");
 }
 
 // Check on load
