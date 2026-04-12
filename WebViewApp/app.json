@@ -1,10 +1,28 @@
 {
   "expo": {
-    "name": "WebViewApp",
-    "slug": "WebViewApp",
+    "name": "QuantumVision",
+    "slug": "QuantumVisionQNN",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#020617"
+    },
     "android": {
-      "package": "com.pujitha.visionapp"
+      "package": "com.pujitha.quantumvision",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#020617"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.VIBRATE"
+      ]
     },
     "extra": {
       "eas": {
