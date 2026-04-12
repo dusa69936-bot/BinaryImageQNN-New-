@@ -9,8 +9,8 @@ export default function App() {
   const [debugText, setDebugText] = useState("Voi-Bridge Ready");
   const [lastMessage, setLastMessage] = useState("");
 
-  // 🔥 Your live Production URL
-  const targetUrl = 'https://binaryimageqnn-1.onrender.com';
+  // 🔥 Your live Production URL (Adding version to bust cache)
+  const targetUrl = 'https://binaryimageqnn-1.onrender.com?v=' + Date.now();
 
   // Handle Android back button
   React.useEffect(() => {
@@ -92,14 +92,21 @@ export default function App() {
         }}
       />
 
-      {/* 🔥 DEBUG OVERLAY: మీకు మొబైల్ లో కనిపించడం కోసం */}
+      {/* 🔥 DEBUG OVERLAY with RELOAD */}
       <View style={{ 
           position: 'absolute', bottom: 20, left: 20, right: 20, 
-          backgroundColor: 'rgba(0,0,0,0.8)', padding: 15, borderRadius: 20,
-          borderWidth: 1, borderColor: '#4ade80', pointerEvents: 'none'
+          backgroundColor: 'rgba(2, 6, 23, 0.95)', padding: 15, borderRadius: 20,
+          borderWidth: 1, borderColor: '#4ade80', flexDirection: 'row', alignItems: 'center'
       }}>
-        <Text style={{ color: '#4ade80', fontWeight: 'bold', fontSize: 12 }}>System: {debugText}</Text>
-        <Text style={{ color: 'white', marginTop: 5, fontSize: 10 }}>Last: {lastMessage || "None"}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#4ade80', fontWeight: 'bold', fontSize: 12 }}>System: {debugText}</Text>
+          <Text style={{ color: 'white', marginTop: 5, fontSize: 10 }}>Last: {lastMessage || "None"}</Text>
+        </View>
+        <Text 
+          onPress={() => webViewRef.current?.reload()}
+          style={{ backgroundColor: '#4ade80', color: 'black', padding: 8, borderRadius: 10, fontSize: 10, fontWeight: 'bold' }}>
+          RELOAD
+        </Text>
       </View>
     </View>
   );
