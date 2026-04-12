@@ -175,7 +175,10 @@
             </div>
             <button onclick="closeModal('mod-explain')" style="margin-top: 35px; width: 100%; border-radius: 15px; padding: 15px; background: #111827; color: white; border: 2px solid #1e293b; cursor: pointer; font-weight: 900; letter-spacing: 2px;">DISMISS LOG</button>
         </div>
-    </div>
+    <!-- Voice Unlocker for Old APKs -->
+    <button id="voice-unlock-btn" onclick="unlockAudio()" style="position: fixed; bottom: 100px; left: 30px; z-index: 2500; background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: bold; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4); display: none; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-volume-high"></i> Enable Sound
+    </button>
 </section>
 
 <style>
@@ -260,6 +263,7 @@ function testVoice() {
 // 🔥 GLOBAL BRIDGE DETECTION (Triple Lock)
 function updateBridgeStatus() {
     const statusBox = document.getElementById('bridge-status-indicator');
+    const unlockBtn = document.getElementById('voice-unlock-btn');
     const isMobileApp = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
     
     if (statusBox) {
@@ -267,8 +271,29 @@ function updateBridgeStatus() {
         statusBox.style.boxShadow = isMobileApp ? '0 0 10px #4ade80' : '0 0 5px #ef4444';
         statusBox.title = isMobileApp ? "Connected to Mobile" : "Not Connected - Click for Info";
     }
+
+    // If red dot and NOT unlocked yet, show the emergency button
+    if (!isMobileApp && !window.audioUnlocked) {
+        if(unlockBtn) unlockBtn.style.display = 'flex';
+    } else {
+        if(unlockBtn) unlockBtn.style.display = 'none';
+    }
 }
 setInterval(updateBridgeStatus, 1000);
+
+// 🔥 Audio Unlocker for non-bridge environments
+function unlockAudio() {
+    window.audioUnlocked = true;
+    const silentMsg = new SpeechSynthesisUtterance(" ");
+    window.speechSynthesis.speak(silentMsg);
+    
+    speakText("System Voice Enabled");
+    document.getElementById('voice-unlock-btn').style.display = 'none';
+    localStorage.setItem('qnn_voice_unlocked', 'true');
+}
+
+// Check on load
+if(localStorage.getItem('qnn_voice_unlocked') === 'true') window.audioUnlocked = true;
 
 // 🔥 Bridge Debugger
 function showBridgeDebug() {
