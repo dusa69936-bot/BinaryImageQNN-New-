@@ -266,14 +266,25 @@ function speakText(text) {
         if (currentLang === 'te') finalLang = 'te-IN';
         else if (currentLang === 'hi') finalLang = 'hi-IN';
 
+        // 🔥 Visual Bridge Status Indicator
+        const updateBridgeStatus = () => {
+            const statusBox = document.getElementById('bridge-status-indicator');
+            if (window.ReactNativeWebView) {
+                if(statusBox) statusBox.style.backgroundColor = '#4ade80'; // Green
+            } else {
+                if(statusBox) statusBox.style.backgroundColor = '#ef4444'; // Red
+            }
+        };
+        setInterval(updateBridgeStatus, 1000);
+
         // 🔥 React Native Bridge (Direct & Reliable)
         if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify({
                 type: 'SPEAK',
-                text: text,
+                text: String(text),
                 lang: finalLang
             }));
-        }
+        } 
 
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = finalLang;
