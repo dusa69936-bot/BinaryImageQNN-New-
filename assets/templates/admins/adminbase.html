@@ -9,33 +9,33 @@
 
     <style>
 
-    html, body {
-        height: 100%;
-        margin: 0;
-    }
     body {
         margin: 0;
+        padding: 0;
         font-family: 'Segoe UI', sans-serif;
         background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
-                    url("{% static 'img/image.png' %}");
+                    url("{% static 'img/digits_grid_bg.png' %}"); /* Standardized BG */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-attachment: fixed; /* 🔥 Fixes the gaps and scrolling issue */
+        background-attachment: fixed;
         color: white;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
     }
 
-    /* 🔥 NAVBAR */
     .custom-navbar {
         display: flex;
         justify-content: flex-end;
         gap: 15px;
         padding: 15px 30px;
-        background: rgba(0,0,0,0.8);
-        backdrop-filter: blur(10px);
+        background: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
     }
 
     .nav-btn {
@@ -63,8 +63,9 @@
     }
 
     .main-content {
-        padding: 40px;
-        min-height: 80vh;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .footer {
