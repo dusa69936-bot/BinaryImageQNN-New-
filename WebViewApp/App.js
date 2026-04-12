@@ -38,15 +38,22 @@ export default function App() {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'SPEAK' && data.text) {
-        console.log("Speaking via Bridge:", data.text);
+        console.log("Speaking via Bridge:", data.text, data.lang);
         
-        // Let's add an alert to confirm the message reached the mobile app
-        // Alert.alert("Voice Debug", "Received: " + data.text); 
+        // We stop any ongoing speech to start the new one fresh
+        Speech.stop();
 
         Speech.speak(data.text, {
           language: data.lang || 'en-US',
           pitch: 1.0,
           rate: 0.9,
+          onStart: () => console.log("Speech started"),
+          onDone: () => console.log("Speech finished"),
+          onError: (e) => {
+            console.log("Speech engine error:", e);
+            // Fallback to English if original language fails
+            Speech.speak(data.text, { language: 'en-US' });
+          }
         });
       }
     } catch (e) {
