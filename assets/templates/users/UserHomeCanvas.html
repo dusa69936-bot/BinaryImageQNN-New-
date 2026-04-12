@@ -10,7 +10,7 @@
         <p class="hero-subtitle">
             Draw a digit below to see the Deep Quantum Neural Network in action.
             <br><span style="color: #4ade80; font-size: 0.7rem; font-weight: bold;">[ ENGINE V3.1.2 - RE-DEPLOYED ]</span>
-            <div id="bridge-status-indicator" style="width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; display: inline-block; margin-left: 5px; vertical-align: middle; box-shadow: 0 0 5px #ef4444;"></div>
+            <div id="bridge-status-indicator" onclick="showBridgeDebug()" style="width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; display: inline-block; margin-left: 5px; vertical-align: middle; box-shadow: 0 0 5px #ef4444; cursor: pointer;"></div>
         </p>
     </div>
 
@@ -265,15 +265,27 @@ function updateBridgeStatus() {
     if (statusBox) {
         statusBox.style.backgroundColor = isMobileApp ? '#4ade80' : '#ef4444'; 
         statusBox.style.boxShadow = isMobileApp ? '0 0 10px #4ade80' : '0 0 5px #ef4444';
+        statusBox.title = isMobileApp ? "Connected to Mobile" : "Not Connected - Click for Info";
     }
 }
 setInterval(updateBridgeStatus, 1000);
+
+// 🔥 Bridge Debugger
+function showBridgeDebug() {
+    const info = {
+        bridge: !!window.ReactNativeWebView,
+        flag: !!window.isReactNativeWebView,
+        ua: navigator.userAgent,
+        timestamp: new Date().toLocaleTimeString()
+    };
+    alert(`BRIDGE DEBUG:\nBridge: ${info.bridge}\nFlag: ${info.flag}\nUserAgent: ${info.ua.slice(0, 50)}...\nTime: ${info.timestamp}`);
+}
 
 // 🔥 Diagnostic Voice Test
 function testVoice() {
     const isMobile = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
     if (!isMobile) {
-        alert("Mobile Bridge NOT Detected. Dot is Red.");
+        showBridgeDebug();
     }
     speakText("Testing Quantum Voice System");
 }
