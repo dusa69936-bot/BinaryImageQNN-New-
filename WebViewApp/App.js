@@ -7,7 +7,7 @@ export default function App() {
   const canGoBackRef = useRef(false);
 
   // 🔥 Your live Production URL
-  const targetUrl = 'https://binary-3.onrender.com';
+  const targetUrl = 'https://binary-image-qnn-new.onrender.com';
 
   // Handle Android back button
   React.useEffect(() => {

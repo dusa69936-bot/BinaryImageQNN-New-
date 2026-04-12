@@ -178,6 +178,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # Set to False and use CORS_ALLOWED_ORIGINS in pr
 ALLOWED_HOSTS = ['*']  # For Render deployment flexibility
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://binary-image-qnn-new.onrender.com',
     'https://binary-3.onrender.com',
     'https://*.onrender.com',
     'https://founder-dangling-sacred.ngrok-free.dev',
