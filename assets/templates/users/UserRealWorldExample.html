@@ -488,18 +488,27 @@ function speakText(text) {
     const currentLang = localStorage.getItem('qnn_lang') || 'en';
     let finalLang = (currentLang === 'te') ? 'te-IN' : (currentLang === 'hi' ? 'hi-IN' : 'en-US');
 
-    // 1. Try Mobile Bridge (ReactNative App)
+    // 1. Try Mobile Bridge (Latest ReactNative App)
     if (window.ReactNativeWebView || window.isReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'SPEAK', text: String(text), lang: finalLang }));
         return;
     }
 
-    // 2. Browser Speech Synthesis
-    const msg = new SpeechSynthesisUtterance(text);
-    msg.lang = finalLang;
-    msg.rate = 0.9;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(msg);
+    // 2. Fallback for Old APKs: Google TTS via Hidden Audio
+    let audioFallback = document.getElementById('qnn-audio-engine');
+    if (!audioFallback) {
+        audioFallback = document.createElement('audio');
+        audioFallback.id = 'qnn-audio-engine';
+        audioFallback.style.display = 'none';
+        document.body.appendChild(audioFallback);
+    }
+    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${currentLang}&client=tw-ob`;
+    audioFallback.src = ttsUrl;
+    audioFallback.play().catch(() => {
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = finalLang;
+        window.speechSynthesis.speak(msg);
+    });
 }
 
 // 🔥 Mobile Voice Unlocker (Crucial for Mobile/Webview Browsers)
