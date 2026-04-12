@@ -26,12 +26,23 @@ export default function App() {
     };
   }, []);
 
+  // 🔥 Initial Test to see if phone speaker is working
+  React.useEffect(() => {
+    setTimeout(() => {
+      Speech.speak("Quantum Bridge Active", { rate: 0.9 });
+    }, 2000);
+  }, []);
+
   // 🔥 Speech Bridge Logic to bypass WebView restrictions
   const handleMessage = (event) => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'SPEAK' && data.text) {
         console.log("Speaking via Bridge:", data.text);
+        
+        // Let's add an alert to confirm the message reached the mobile app
+        // Alert.alert("Voice Debug", "Received: " + data.text); 
+
         Speech.speak(data.text, {
           language: data.lang || 'en-US',
           pitch: 1.0,
