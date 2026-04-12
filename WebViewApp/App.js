@@ -49,18 +49,16 @@ export default function App() {
         setLastMessage(data.text);
         Vibration.vibrate(100); 
         
-        Speech.stop().then(() => {
-          Speech.speak(data.text, {
-            language: data.lang || 'en-US',
-            pitch: 1.0,
-            rate: 0.9,
-            onStart: () => setDebugText("Speaking Now"),
-            onDone: () => setDebugText("Finished Speaking"),
-            onError: (e) => {
-              setDebugText("Voice Fail!");
-              Alert.alert("Speech Error", "Could not play: " + data.text + "\nReason: " + e.message);
-            }
-          });
+        Speech.speak(data.text, {
+          language: data.lang || 'en-US',
+          pitch: 1.0,
+          rate: 0.9,
+          onStart: () => setDebugText("Speaking Now"),
+          onDone: () => setDebugText("Finished Speaking"),
+          onError: (e) => {
+            setDebugText("Voice Fail!");
+            Alert.alert("Speech Error", "Could not play: " + data.text + "\nReason: " + e.message);
+          }
         });
       }
     } catch (e) {

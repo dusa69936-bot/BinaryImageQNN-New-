@@ -39,32 +39,75 @@
     to{ opacity:1; transform:translateY(0); }
 }
 
-.dashboard-box{
-    background: rgba(255, 255, 255, 0.05);
+.dashboard-box {
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    padding: 2.5rem 5rem;
-    border-radius: 24px;
-    text-align:center;
-    color:white;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    animation: fadeUp 1.2s ease 0.3s forwards;
-    opacity: 0;
+    padding: 3rem 6rem;
+    border-radius: 30px;
+    text-align: center;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    
+    position: relative;
+    overflow: hidden;
+    animation: float 4s ease-in-out infinite, fadeUp 1.2s ease forwards;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+    cursor: default;
+}
+
+.dashboard-box:hover {
+    transform: translateY(-10px) rotateX(5deg) rotateY(2deg);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 🔥 Glass Shine Effect */
+.dashboard-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: shine 6s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
 }
 
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; }
 }
 
-.dashboard-box h3{
-    font-size:1.8rem;
-    font-weight:700;
-    margin:0;
-    background: linear-gradient(to right, #fff, #cbd5e1);
+.dashboard-box h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #ffffff 0%, #a855f7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 </style>
