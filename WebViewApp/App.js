@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, BackHandler, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, BackHandler, ActivityIndicator, View, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Speech from 'expo-speech'; // 🔥 The Secret Sauce for Voice
 
@@ -40,6 +40,9 @@ export default function App() {
       if (data.type === 'SPEAK' && data.text) {
         console.log("Speaking via Bridge:", data.text, data.lang);
         
+        // 🔥 DEBUG ALERT (మీకు మొబైల్ లో చూడటం కోసం)
+        Alert.alert("Voice Bridge", "Received: " + data.text); 
+
         // We stop any ongoing speech to start the new one fresh
         Speech.stop();
 
