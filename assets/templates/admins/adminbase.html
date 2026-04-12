@@ -9,6 +9,10 @@
 
     <style>
 
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
     body {
         margin: 0;
         font-family: 'Segoe UI', sans-serif;
@@ -16,7 +20,12 @@
                     url("{% static 'img/image.png' %}");
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* 🔥 Fixes the gaps and scrolling issue */
         color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
     /* 🔥 NAVBAR */

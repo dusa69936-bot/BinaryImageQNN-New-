@@ -2,114 +2,89 @@
 {% load static %}
 
 {% block contents %}
-
 <style>
-
-/* 🔥 FULL BACKGROUND */
-#intro {
-    min-height: 100vh;
-    padding: 120px 40px;
-
-    background: linear-gradient(
-        rgba(0,0,0,0.3),
-        rgba(0,0,0,0.6)
-    ),
-    url("{% static 'img/digits_grid_bg.png' %}");
-
-    background-size: cover;
-    background-position: center;
+.users-container {
+    padding: 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* 🔥 TITLE */
 .page-title {
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 30px;
-
-    text-shadow: 
-        0 0 10px rgba(255,255,255,0.8),
-        0 0 20px rgba(255,255,255,0.6);
+    font-size: 3rem;
+    font-weight: 900;
+    color: #FFD700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 2.5rem;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
-/* 🔥 BIG GLASS BOX (UPDATED 🔥) */
 .table-box {
-    width: 95%;                 /* FULL WIDTH */
-    margin: auto;
-    padding: 30px;
-
-    background: rgba(255,255,255,0.05);
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(20px);
-    border-radius: 20px;
-
-    box-shadow: 0 15px 60px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    overflow-x: auto;
 }
 
-/* 🔥 TABLE */
 table {
     width: 100%;
-    border-collapse: collapse;
-    color: white;
+    border-collapse: separate;
+    border-spacing: 0 10px;
 }
 
-/* 🔴 HEADER */
 th {
-    background: rgba(255,255,255,0.1);
-    padding: 14px;
-    text-align: center;
-
-    color: #ff4d4d;
-    font-weight: 700;
+    padding: 1.2rem;
+    color: #94a3b8;
     text-transform: uppercase;
-
-    text-shadow: 0 0 8px rgba(255, 77, 77, 0.7);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(255,255,255,0.05);
 }
 
-/* DATA */
 td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.02);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-/* 🔥 ROW HOVER */
-tr:hover {
-    background: rgba(255,255,255,0.08);
-    transform: scale(1.01);
+tr td:first-child { border-radius: 12px 0 0 12px; border-left: 1px solid rgba(255,255,255,0.05); }
+tr td:last-child { border-radius: 0 12px 12px 0; border-right: 1px solid rgba(255,255,255,0.05); }
+
+tr:hover td {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
     transition: 0.3s;
 }
 
-/* 🔥 STATUS */
-.status-active {
-    color: #4ade80;
-    font-weight: bold;
-}
+.status-active { color: #4ade80; font-weight: bold; }
+.status-waiting { color: #facc15; font-weight: bold; }
 
-.status-waiting {
-    color: #facc15;
-    font-weight: bold;
-}
-
-/* 🔥 LINKS */
-a {
-    color: #60a5fa;
+.action-btn {
+    padding: 6px 15px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
     text-decoration: none;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
-a:hover {
-    color: #a78bfa;
-    text-decoration: underline;
+.action-btn:hover {
+    background: #6366f1;
+    color: white;
 }
-
 </style>
 
-
-<section id="intro">
-
-    <!-- 🔥 TITLE -->
-    <h2 class="page-title">View Register User Details</h2>
+<div class="users-container">
+    <h2 class="page-title">User Information Hub</h2>
 
     <!-- 🔥 BIG TABLE -->
     <div class="table-box">
@@ -148,10 +123,10 @@ a:hover {
 
                 <td>
                     {% if i.status == 'waiting' %}
-                        <a href="{% url 'activate_user' i.id %}">Activate</a>
+                        <a href="{% url 'activate_user' i.id %}" class="action-btn">Activate</a>
                     {% else %}
-                        Activated /
-                        <a href="{% url 'delete_user' i.id %}">Delete</a>
+                        <span style="color: #94a3b8;">Activated</span> /
+                        <a href="{% url 'delete_user' i.id %}" class="action-btn" style="border-color: #ef4444; color: #ef4444;">Delete</a>
                     {% endif %}
                 </td>
 
