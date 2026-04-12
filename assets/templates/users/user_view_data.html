@@ -1,18 +1,74 @@
-{% block subcontents %}
-<section class="hero-section" style="padding-top: 6rem;">
-    <div class="reveal">
-        <h1 class="hero-title"><i class="fa-solid fa-database"></i> MNIST Dataset Explorer</h1>
-        <p class="hero-subtitle">Visualizing the benchmark digit repository used for QNN training.</p>
-    </div>
+{% extends 'base.html' %}
+{% load static %}
 
-    <div class="glass-card reveal" style="margin-top: 3rem; padding: 3rem; text-align: center;">
-        <h3 style="color: #FFD700; margin-bottom: 2rem;">Dataset Sample Preview</h3>
-        <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: inline-block;">
-            <img src="/media/mnist.png" style="max-width: 100%; border-radius: 8px; filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.4));" alt="MNIST Samples"/>
-        </div>
-        <p style="margin-top: 2rem; color: #94a3b8; font-size: 0.9rem;">
-            This manifest represents a subset of 60,000 training images and 10,000 testing images currently localized in the environment.
+{% block contents %}
+<section class="hero-section" style="padding-top: 6rem; min-height: 100vh; background: #020617; color: white;">
+    <div class="reveal" style="text-align: center; margin-bottom: 3rem;">
+        <h1 class="hero-title" style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(to right, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <i class="fa-solid fa-database" style="margin-right: 15px;"></i> MNIST Dataset Explorer
+        </h1>
+        <p class="hero-subtitle" style="color: #94a3b8; font-size: 1.1rem; margin-top: 10px;">
+            Visualizing the benchmark digit repository used for QNN training.
         </p>
     </div>
+
+    <div class="glass-card reveal" style="max-width: 900px; margin: 0 auto; padding: 3rem; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; backdrop-filter: blur(12px); text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        
+        <div style="display: inline-block; padding: 4px; border-radius: 20px; background: linear-gradient(45deg, #6366f1, #a855f7); margin-bottom: 2rem;">
+            <div style="background: #0f172a; padding: 2rem; border-radius: 17px;">
+                <h3 style="color: #FFD700; margin-bottom: 2rem; font-weight: 700; letter-spacing: 1px;">Dataset Sample Preview</h3>
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/MnistExamples.png" style="max-width: 100%; border-radius: 8px; filter: invert(1) brightness(1.2) drop-shadow(0 0 15px rgba(99, 102, 241, 0.3));" alt="MNIST Samples"/>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+            <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #6366f1; font-size: 1.5rem; margin-bottom: 10px;"><i class="fa-solid fa-images"></i></div>
+                <div style="font-size: 1.2rem; font-weight: 800;">70,000</div>
+                <div style="color: #64748b; font-size: 0.8rem;">Total Images</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #a855f7; font-size: 1.5rem; margin-bottom: 10px;"><i class="fa-solid fa-layer-group"></i></div>
+                <div style="font-size: 1.2rem; font-weight: 800;">10 Classes</div>
+                <div style="color: #64748b; font-size: 0.8rem;">Digits 0-9</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="color: #f59e0b; font-size: 1.5rem; margin-bottom: 10px;"><i class="fa-solid fa-expand"></i></div>
+                <div style="font-size: 1.2rem; font-weight: 800;">28 x 28</div>
+                <div style="color: #64748b; font-size: 0.8rem;">Image Resolution</div>
+            </div>
+        </div>
+
+        <p style="margin-top: 3rem; color: #94a3b8; font-size: 1rem; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto;">
+            The MNIST (Modified National Institute of Standards and Technology) database is the worldwide gold standard for training and testing in the field of machine learning.
+        </p>
+        
+        <a href="{% url 'user_home_canvas' %}" style="display: inline-block; margin-top: 2rem; padding: 12px 30px; background: linear-gradient(to right, #4f46e5, #7c3aed); color: white; border-radius: 12px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+            Back to Canvas
+        </a>
+    </div>
 </section>
+
+<style>
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+        transition: 0.5s;
+    }
+    .glass-card:hover::before {
+        left: 100%;
+    }
+    .reveal {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 {% endblock %}
