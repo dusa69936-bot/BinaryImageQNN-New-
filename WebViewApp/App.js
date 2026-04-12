@@ -29,10 +29,15 @@ export default function App() {
   }, []);
 
   // 🔥 Initial Test to see if phone speaker is working
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
-      Speech.speak("Quantum Bridge Active", { rate: 0.9 });
-    }, 2000);
+      setDebugText("Testing Speaker...");
+      Speech.speak("System Online", { 
+        rate: 0.9,
+        onStart: () => setDebugText("Speaker Working!"),
+        onError: (e) => Alert.alert("Speaker Error", "Voice engine failed: " + e.message)
+      });
+    }, 3000);
   }, []);
 
   // 🔥 Speech Bridge Logic to bypass WebView restrictions
@@ -40,17 +45,22 @@ export default function App() {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'SPEAK' && data.text) {
-        setDebugText("Speaking...");
+        setDebugText("Request Received...");
         setLastMessage(data.text);
-        Vibration.vibrate(100); // 📳 Shake phone on voice request
+        Vibration.vibrate(100); 
         
-        Speech.stop();
-        Speech.speak(data.text, {
-          language: data.lang || 'en-US',
-          pitch: 1.0,
-          rate: 0.9,
-          onDone: () => setDebugText("Voice Done"),
-          onError: () => setDebugText("Voice Error!")
+        Speech.stop().then(() => {
+          Speech.speak(data.text, {
+            language: data.lang || 'en-US',
+            pitch: 1.0,
+            rate: 0.9,
+            onStart: () => setDebugText("Speaking Now"),
+            onDone: () => setDebugText("Finished Speaking"),
+            onError: (e) => {
+              setDebugText("Voice Fail!");
+              Alert.alert("Speech Error", "Could not play: " + data.text + "\nReason: " + e.message);
+            }
+          });
         });
       }
     } catch (e) {

@@ -267,13 +267,22 @@ function speakText(text) {
         else if (currentLang === 'hi') finalLang = 'hi-IN';
 
         // 🔥 React Native Bridge (Absolute Guarantee for Mobile Apps)
-        if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'SPEAK',
-                text: text,
-                lang: finalLang
-            }));
-            return; // Exit and use mobile native speech
+        function sendToBridge(attempt = 0) {
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'SPEAK',
+                    text: text,
+                    lang: finalLang
+                }));
+            } else if (attempt < 5) {
+                // If bridge not ready, wait and try again
+                setTimeout(() => sendToBridge(attempt + 1), 500);
+            }
+        }
+
+        if (window.ReactNativeWebView || /Expo|iPhone|Android|Mobile/i.test(navigator.userAgent)) {
+            sendToBridge();
+            // We don't return here yet so browser speech can act as a sub-fallback
         }
 
         const msg = new SpeechSynthesisUtterance(text);
