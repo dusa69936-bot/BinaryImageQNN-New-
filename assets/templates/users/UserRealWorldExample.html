@@ -462,56 +462,25 @@ function initAnimatedTitle() {
 }
 
 // Update speakText to respect sound setting
-// 🚀 Guaranteed Phonetic Force Engine (Fixed Silence Issue)
 function speakText(text) {
     if (localStorage.getItem('qnn_sound') === 'off') return;
-    
-    const synth = window.speechSynthesis;
-    
-    const trySpeak = () => {
-        let finalLang = 'en-US'; 
-        if (currentLang === 'te') finalLang = 'te-IN';
-        else if (currentLang === 'hi') finalLang = 'hi-IN';
+    const currentLang = localStorage.getItem('qnn_lang') || 'en';
+    let finalLang = (currentLang === 'te') ? 'te-IN' : (currentLang === 'hi' ? 'hi-IN' : 'en-US');
 
-        // 🔥 React Native Bridge (Direct & Reliable)
-        if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'SPEAK',
-                text: text,
-                lang: finalLang
-            }));
-        }
+    // 1. Try Mobile Bridge
+    if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'SPEAK', text: String(text), lang: finalLang }));
+        return;
+    }
 
+    // 2. Try Google TTS Fallback (Guaranteed)
+    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${currentLang}&client=tw-ob`;
+    const audio = new Audio(ttsUrl);
+    audio.play().catch(() => {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = finalLang;
-        msg.rate = 0.9;
-        msg.pitch = 1.0;
-        
-        const voices = synth.getVoices();
-        const preferredVoice = voices.find(v => v.lang.startsWith(finalLang.split('-')[0]));
-        if(preferredVoice) msg.voice = preferredVoice;
-
-        synth.cancel(); 
-        synth.speak(msg);
-        
-        // 🔥 Android App Fallback (Google TTS)
-        const audioFallback = document.getElementById('audio-fallback') || document.createElement('audio');
-        audioFallback.id = 'audio-fallback';
-        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${finalLang.split('-')[0]}&client=tw-ob`;
-        
-        setTimeout(() => {
-            if (!synth.speaking) {
-                audioFallback.src = ttsUrl;
-                audioFallback.play().catch(e => console.log("Manual interaction still needed"));
-            }
-        }, 300);
-    };
-
-    if (synth.getVoices().length === 0 && 'onvoiceschanged' in synth) {
-        synth.onvoiceschanged = () => trySpeak();
-    } else {
-        trySpeak();
-    }
+        window.speechSynthesis.speak(msg);
+    });
 }
 
 // 🔥 Mobile Voice Unlocker (Crucial for Mobile/Webview Browsers)
