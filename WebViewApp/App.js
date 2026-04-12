@@ -79,6 +79,8 @@ export default function App() {
         domStorageEnabled={true}
         sharedCookiesEnabled={true}
         thirdPartyCookiesEnabled={true}
+        userAgent="ReactNative-Bridge-Quantum" 
+        injectedJavaScript={`window.isReactNativeWebView = true; true;`}
         setSupportMultipleWindows={false}
         mediaPlaybackRequiresUserAction={false} 
         allowsInlineMediaPlayback={true}        

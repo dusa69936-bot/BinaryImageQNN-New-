@@ -257,6 +257,17 @@ function testVoice() {
 }
 
 // 🚀 Guaranteed Phonetic Force Engine (Fixed Silence Issue)
+// 🔥 GLOBAL BRIDGE DETECTION
+function updateBridgeStatus() {
+    const statusBox = document.getElementById('bridge-status-indicator');
+    const isMobileApp = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
+    if (statusBox) {
+        statusBox.style.backgroundColor = isMobileApp ? '#4ade80' : '#ef4444'; 
+        statusBox.style.boxShadow = isMobileApp ? '0 0 10px #4ade80' : '0 0 5px #ef4444';
+    }
+}
+setInterval(updateBridgeStatus, 1500);
+
 function speakText(text) {
     if (localStorage.getItem('qnn_sound') === 'off') return;
     
@@ -266,17 +277,6 @@ function speakText(text) {
         let finalLang = 'en-US'; 
         if (currentLang === 'te') finalLang = 'te-IN';
         else if (currentLang === 'hi') finalLang = 'hi-IN';
-
-        // 🔥 Visual Bridge Status Indicator
-        const updateBridgeStatus = () => {
-            const statusBox = document.getElementById('bridge-status-indicator');
-            if (window.ReactNativeWebView) {
-                if(statusBox) statusBox.style.backgroundColor = '#4ade80'; // Green
-            } else {
-                if(statusBox) statusBox.style.backgroundColor = '#ef4444'; // Red
-            }
-        };
-        setInterval(updateBridgeStatus, 1000);
 
         // 🔥 React Native Bridge (Direct & Reliable)
         if (window.ReactNativeWebView) {
