@@ -88,7 +88,14 @@ export default function App() {
         allowFileAccess={true}
         scalesPageToFit={true}
         mixedContentMode="always"
-        onMessage={handleMessage} 
+        onMessage={handleMessage}
+        onShouldStartLoadWithRequest={(request) => {
+          // 🔥 Block Google TTS & external audio URLs from navigating
+          const blocked = ['translate.google.com', 'translate_tts', 'gstatic.com'];
+          const isBlocked = blocked.some(b => request.url.includes(b));
+          if (isBlocked) return false; // Block navigation, don't follow
+          return true; // Allow everything else
+        }}
         onNavigationStateChange={(navState) => {
           canGoBackRef.current = navState.canGoBack;
         }}

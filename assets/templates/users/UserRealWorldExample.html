@@ -461,26 +461,23 @@ function initAnimatedTitle() {
     });
 }
 
-// Update speakText to respect sound setting
 function speakText(text) {
     if (localStorage.getItem('qnn_sound') === 'off') return;
     const currentLang = localStorage.getItem('qnn_lang') || 'en';
     let finalLang = (currentLang === 'te') ? 'te-IN' : (currentLang === 'hi' ? 'hi-IN' : 'en-US');
 
-    // 1. Try Mobile Bridge
-    if (window.ReactNativeWebView) {
+    // 1. Try Mobile Bridge (ReactNative App)
+    if (window.ReactNativeWebView || window.isReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'SPEAK', text: String(text), lang: finalLang }));
         return;
     }
 
-    // 2. Try Google TTS Fallback (Guaranteed)
-    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${currentLang}&client=tw-ob`;
-    const audio = new Audio(ttsUrl);
-    audio.play().catch(() => {
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = finalLang;
-        window.speechSynthesis.speak(msg);
-    });
+    // 2. Browser Speech Synthesis
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.lang = finalLang;
+    msg.rate = 0.9;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(msg);
 }
 
 // 🔥 Mobile Voice Unlocker (Crucial for Mobile/Webview Browsers)
