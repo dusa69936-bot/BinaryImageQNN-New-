@@ -1,75 +1,76 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, BackHandler, ActivityIndicator, View, Alert, Text, Vibration } from 'react-native';
+import { StyleSheet, BackHandler, StatusBar, View, Alert, Text, Vibration } from 'react-native';
 import { WebView } from 'react-native-webview';
-import * as Speech from 'expo-speech'; // 🔥 The Secret Sauce for Voice
+import * as Speech from 'expo-speech';
 
 export default function App() {
   const webViewRef = useRef(null);
   const canGoBackRef = useRef(false);
-  const [debugText, setDebugText] = useState("Voi-Bridge Ready");
+  const [debugText, setDebugText] = useState("Bridge Ready");
   const [lastMessage, setLastMessage] = useState("");
 
-  // 🔥 Your live Production URL (Adding version to bust cache)
-  const targetUrl = 'https://binaryimageqnn-1.onrender.com?v=' + Date.now();
+  const targetUrl = 'https://binaryimageqnn-1.onrender.com';
 
-  // Handle Android back button
-  React.useEffect(() => {
-    const handleBackButton = () => {
+  // ✅ Fixed BackHandler (new subscription pattern)
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       if (canGoBackRef.current && webViewRef.current) {
         webViewRef.current.goBack();
         return true;
       }
-      return false; // let default behavior happen (exit app)
-    };
-
-    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-    };
+      return false;
+    });
+    return () => subscription.remove(); // ✅ Correct cleanup
   }, []);
 
-  // 🔥 Initial Test to see if phone speaker is working
+  // 🔥 Startup Voice Test
   useEffect(() => {
     setTimeout(() => {
       setDebugText("Testing Speaker...");
-      Speech.speak("System Online", { 
+      Speech.speak("System Online", {
         rate: 0.9,
         onStart: () => setDebugText("Speaker Working!"),
-        onError: (e) => Alert.alert("Speaker Error", "Voice engine failed: " + e.message)
+        onError: () => setDebugText("Speaker Error!")
       });
     }, 3000);
   }, []);
 
-  // 🔥 Speech Bridge Logic to bypass WebView restrictions
+  // 🔥 Bridge: Receive SPEAK messages from website
   const handleMessage = (event) => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'SPEAK' && data.text) {
-        setDebugText("Request Received...");
+        setDebugText("Speaking...");
         setLastMessage(data.text);
-        Vibration.vibrate(100); 
-        
+        Vibration.vibrate(80);
         Speech.speak(data.text, {
           language: data.lang || 'en-US',
           pitch: 1.0,
           rate: 0.9,
-          onStart: () => setDebugText("Speaking Now"),
-          onDone: () => setDebugText("Finished Speaking"),
-          onError: (e) => {
-            setDebugText("Voice Fail!");
-            Alert.alert("Speech Error", "Could not play: " + data.text + "\nReason: " + e.message);
-          }
+          onDone: () => setDebugText("Done ✓"),
+          onError: () => setDebugText("Voice Error!")
         });
       }
     } catch (e) {
-      console.log("WebView Message Error:", e);
+      console.log("Bridge Error:", e);
     }
+  };
+
+  // 🔥 Block any URL that should NOT cause navigation
+  const shouldStartLoad = (request) => {
+    const url = request.url;
+    // Allow only our main app URL
+    if (url.startsWith('https://binaryimageqnn-1.onrender.com')) return true;
+    if (url.startsWith('about:blank')) return true;
+    if (url.startsWith('data:')) return true;
+    // Block everything else (Google TTS, external links, etc.)
+    console.log("Blocked navigation to:", url);
+    return false;
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#020617" />
-      
       <WebView
         ref={webViewRef}
         source={{ uri: targetUrl }}
@@ -79,23 +80,17 @@ export default function App() {
         domStorageEnabled={true}
         sharedCookiesEnabled={true}
         thirdPartyCookiesEnabled={true}
-        userAgent="ReactNative-Bridge-Quantum" 
+        userAgent="ReactNative-Bridge-Quantum"
         injectedJavaScript={`window.isReactNativeWebView = true; true;`}
         setSupportMultipleWindows={false}
-        mediaPlaybackRequiresUserAction={false} 
-        allowsInlineMediaPlayback={true}        
+        mediaPlaybackRequiresUserAction={false}
+        allowsInlineMediaPlayback={true}
         allowsFullscreenVideo={true}
         allowFileAccess={true}
         scalesPageToFit={true}
         mixedContentMode="always"
         onMessage={handleMessage}
-        onShouldStartLoadWithRequest={(request) => {
-          // 🔥 Block Google TTS & external audio URLs from navigating
-          const blocked = ['translate.google.com', 'translate_tts', 'gstatic.com'];
-          const isBlocked = blocked.some(b => request.url.includes(b));
-          if (isBlocked) return false; // Block navigation, don't follow
-          return true; // Allow everything else
-        }}
+        onShouldStartLoadWithRequest={shouldStartLoad}
         onNavigationStateChange={(navState) => {
           canGoBackRef.current = navState.canGoBack;
         }}
