@@ -478,6 +478,16 @@ function speakText(text) {
         if (currentLang === 'te') finalLang = 'te-IN';
         else if (currentLang === 'hi') finalLang = 'hi-IN';
 
+        // 🔥 React Native Bridge (Absolute Guarantee for Mobile Apps)
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'SPEAK',
+                text: text,
+                lang: finalLang
+            }));
+            return; // Exit and use mobile native speech
+        }
+
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = finalLang;
         msg.rate = 0.9;
