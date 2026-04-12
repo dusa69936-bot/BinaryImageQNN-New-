@@ -257,16 +257,26 @@ function testVoice() {
 }
 
 // 🚀 Guaranteed Phonetic Force Engine (Fixed Silence Issue)
-// 🔥 GLOBAL BRIDGE DETECTION
+// 🔥 GLOBAL BRIDGE DETECTION (Triple Lock)
 function updateBridgeStatus() {
     const statusBox = document.getElementById('bridge-status-indicator');
     const isMobileApp = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
+    
     if (statusBox) {
         statusBox.style.backgroundColor = isMobileApp ? '#4ade80' : '#ef4444'; 
         statusBox.style.boxShadow = isMobileApp ? '0 0 10px #4ade80' : '0 0 5px #ef4444';
     }
 }
-setInterval(updateBridgeStatus, 1500);
+setInterval(updateBridgeStatus, 1000);
+
+// 🔥 Diagnostic Voice Test
+function testVoice() {
+    const isMobile = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
+    if (!isMobile) {
+        alert("Mobile Bridge NOT Detected. Dot is Red.");
+    }
+    speakText("Testing Quantum Voice System");
+}
 
 function speakText(text) {
     if (localStorage.getItem('qnn_sound') === 'off') return;

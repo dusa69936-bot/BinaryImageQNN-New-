@@ -1,36 +1,33 @@
 {
   "expo": {
     "name": "QuantumVision",
-    "slug": "QuantumVisionQNN",
+    "slug": "QuantumVision",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#020617"
     },
     "android": {
-      "package": "com.pujitha.quantumvision",
-      "versionCode": 1,
+      "package": "com.pujitha.visionapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#020617"
       },
       "permissions": [
-        "android.permission.INTERNET",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.VIBRATE"
+        "VIBRATE"
       ]
     },
-    "extra": {
-      "eas": {
-        "projectId": "8bde1c1d-255b-4f53-8e13-7446042de70b"
-      }
-    },
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
     "plugins": [
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "eb0d3595-6a22-4b93-a7bb-1c09711d642f"
+      }
+    }
   }
 }

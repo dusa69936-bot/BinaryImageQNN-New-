@@ -6,12 +6,11 @@ import * as Speech from 'expo-speech';
 export default function App() {
   const webViewRef = useRef(null);
   const canGoBackRef = useRef(false);
-  const [debugText, setDebugText] = useState("Bridge Ready");
+  const [debugText, setDebugText] = useState("System Ready");
   const [lastMessage, setLastMessage] = useState("");
 
-  const targetUrl = 'https://binaryimageqnn-1.onrender.com';
+  const targetUrl = 'https://binaryimageqnn-1.onrender.com?v=' + Date.now();
 
-  // ✅ Fixed BackHandler (new subscription pattern)
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       if (canGoBackRef.current && webViewRef.current) {
@@ -20,22 +19,19 @@ export default function App() {
       }
       return false;
     });
-    return () => subscription.remove(); // ✅ Correct cleanup
+    return () => subscription.remove();
   }, []);
 
-  // 🔥 Startup Voice Test
   useEffect(() => {
     setTimeout(() => {
-      setDebugText("Testing Speaker...");
       Speech.speak("System Online", {
         rate: 0.9,
-        onStart: () => setDebugText("Speaker Working!"),
-        onError: () => setDebugText("Speaker Error!")
+        onStart: () => setDebugText("Speaker OK"),
+        onError: () => setDebugText("Speaker ERR")
       });
-    }, 3000);
+    }, 2000);
   }, []);
 
-  // 🔥 Bridge: Receive SPEAK messages from website
   const handleMessage = (event) => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
@@ -48,7 +44,7 @@ export default function App() {
           pitch: 1.0,
           rate: 0.9,
           onDone: () => setDebugText("Done ✓"),
-          onError: () => setDebugText("Voice Error!")
+          onError: () => setDebugText("Voice Err")
         });
       }
     } catch (e) {
@@ -56,15 +52,12 @@ export default function App() {
     }
   };
 
-  // 🔥 Block any URL that should NOT cause navigation
   const shouldStartLoad = (request) => {
     const url = request.url;
-    // Allow only our main app URL
-    if (url.startsWith('https://binaryimageqnn-1.onrender.com')) return true;
-    if (url.startsWith('about:blank')) return true;
-    if (url.startsWith('data:')) return true;
-    // Block everything else (Google TTS, external links, etc.)
-    console.log("Blocked navigation to:", url);
+    if (url.startsWith('https://binaryimageqnn-1.onrender.com') || url.startsWith('about:blank') || url.startsWith('data:')) {
+      return true;
+    }
+    // Block unexpected redirects
     return false;
   };
 
@@ -95,39 +88,16 @@ export default function App() {
           canGoBackRef.current = navState.canGoBack;
         }}
       />
-
-      {/* 🔥 DEBUG OVERLAY with RELOAD */}
-      <View style={{ 
-          position: 'absolute', bottom: 20, left: 20, right: 20, 
-          backgroundColor: 'rgba(2, 6, 23, 0.95)', padding: 15, borderRadius: 20,
-          borderWidth: 1, borderColor: '#4ade80', flexDirection: 'row', alignItems: 'center'
-      }}>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#4ade80', fontWeight: 'bold', fontSize: 12 }}>System: {debugText}</Text>
-          <Text style={{ color: 'white', marginTop: 5, fontSize: 10 }}>Last: {lastMessage || "None"}</Text>
-        </View>
-        <Text 
-          onPress={() => webViewRef.current?.reload()}
-          style={{ backgroundColor: '#4ade80', color: 'black', padding: 8, borderRadius: 10, fontSize: 10, fontWeight: 'bold' }}>
-          RELOAD
-        </Text>
+      
+      {/* Mini Debug (Invisible to users, visible when knowing where to look) */}
+      <View style={{ position: 'absolute', top: 50, right: 10, opacity: 0.5 }}>
+          <Text style={{ color: '#4ade80', fontSize: 8 }}>{debugText}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  webview: {
-    flex: 1,
-  },
-  loaderContainer: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-  },
+  container: { flex: 1, backgroundColor: '#020617' },
+  webview: { flex: 1, backgroundColor: '#020617' }
 });

@@ -9,6 +9,7 @@
         </h2>
         <p class="hero-subtitle mb-5" style="margin-bottom: 3rem; font-size: 1.2rem;">
             <span style="color: white;">Real-World Example:</span> <span style="color: #FFD700;">Handwritten Digit Recognition</span>
+            <div id="bridge-status-indicator" style="width: 8px; height: 8px; border-radius: 50%; background-color: #ef4444; display: inline-block; margin-left: 5px; vertical-align: middle; box-shadow: 0 0 5px #ef4444;"></div>
         </p>
     </div>
 
@@ -459,6 +460,27 @@ function initAnimatedTitle() {
         span.style.animationDelay = `${index * 0.1}s`;
         text.appendChild(span);
     });
+}
+
+// 🔥 GLOBAL BRIDGE DETECTION (Triple Lock)
+function updateBridgeStatus() {
+    const statusBox = document.getElementById('bridge-status-indicator');
+    const isMobileApp = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
+    
+    if (statusBox) {
+        statusBox.style.backgroundColor = isMobileApp ? '#4ade80' : '#ef4444'; 
+        statusBox.style.boxShadow = isMobileApp ? '0 0 10px #4ade80' : '0 0 5px #ef4444';
+    }
+}
+setInterval(updateBridgeStatus, 1000);
+
+// 🔥 Diagnostic Voice Test
+function testVoice() {
+    const isMobile = window.ReactNativeWebView || window.isReactNativeWebView || navigator.userAgent.includes('ReactNative');
+    if (!isMobile) {
+        alert("Mobile Bridge NOT Detected. Dot is Red.");
+    }
+    speakText("Testing Quantum Voice System");
 }
 
 function speakText(text) {
